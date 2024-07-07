@@ -5,11 +5,10 @@ interface ComplainDetails {
 }
 
 export async function POST(req: NextRequest) {
-  console.log("nidagan");
+  console.log('nidagan');
 
-  const { name } = await req.json();
-
+  const { name }: ComplainDetails = await req.json();
   console.log(name);
 
-  return NextResponse.json({ data: "Internal Server Error" }, { status: 500 });
+  return NextResponse.json({ data: "Success" });
 }
