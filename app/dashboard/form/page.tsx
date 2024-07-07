@@ -45,8 +45,7 @@ const Form = () => {
   };
   return (
     <div>
-      YAWA
-      <Card className="w-full max-w-2xl mx-auto p-6 sm:p-8 md:p-10">
+      <Card className="w-full max-w-2xl mx-auto p-3 sm:p-4 md:p-5">
         <CardHeader>
           <CardTitle className="text-3xl font-bold">File a Complaint</CardTitle>
           <CardDescription>
