@@ -22,16 +22,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { error } from "console";
+// import { error } from "console";
 
 
 const formSchema = z.object({
-  name: z.string().min(1, {message: "Required"}),
+  complainant_name: z.string().min(1, {message: "Required"}),
   email: z.string().email(),
-  // number: z.number().min(0),
+  number: z.string().min(0),
   respondent: z.string(),
   respondent_address: z.string(),
-  // date_occurence: z.date(), 
+  date_occurence: z.string().date(), 
   address: z.string(),
   complaint_type: z.string(),
   complaint_details: z.string(),
@@ -45,7 +45,7 @@ const Form = () => {
     });
 
   const onSubmit: SubmitHandler<ComplainInput> = async (data) => {
-    console.log('true')
+    console.log(data)
     try {
       const request = await fetch("/api/handle_complain", {
         method: "POST",
@@ -81,10 +81,10 @@ const Form = () => {
             <div className="grid gap-6">
               <div className="grid grid-cols-2 gap-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="name">Name</Label>
+                  <Label htmlFor="complainant_name">Complainant&apos;s Name</Label>
                   <Input
-                    {...register("name")}
-                    id="name"
+                    {...register("complainant_name")}
+                    id="complainant_name"
                     placeholder="Enter your full name"
                   />
                 </div>
@@ -97,7 +97,7 @@ const Form = () => {
                 <div className="grid gap-2">
                   <Label htmlFor="phone">Phone Number</Label>
                   <Input
-                  //  {...register("number")}
+                   {...register("number")}
                     id="phone"
                     type="tel"
                     placeholder="Enter your phone number"
@@ -111,14 +111,10 @@ const Form = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div className="grid gap-2">
                   <Label htmlFor="when-happened">When did it happen?</Label>
-                  {/* <Input {...register('date_occurence')} id="when-happened" type="date" /> */}
-                  {/* <input className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    {...register('date_occurence')} id="when-happened" type="date"/> */}
+                  <Input {...register('date_occurence')} id="when-happened" type="date" />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="respondents-address">
-                    Respondents Address (optional)
-                  </Label>
+                  <Label htmlFor="respondents-address">Respondents Address (optional)</Label>
                   <Input {...register("respondent_address")}
                     id="respondents-address"
                     placeholder="Enter the respondents address"
@@ -131,15 +127,15 @@ const Form = () => {
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="complaint_type">Type of Complaint</Label>
-                <Select  onValueChange={(event) => setValue('complaint_type', event)} >
+                <Select onValueChange={(event) => setValue("complaint_type", event)} >
                   <SelectTrigger id="complaint_type">
                     <SelectValue {...register("complaint_type")} placeholder="Select complaint type" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="noise">Noise</SelectItem>
-                    <SelectItem value="garbage">Garbage</SelectItem>
-                    <SelectItem value="infrastructure">Infrastructure</SelectItem>
-                    <SelectItem value="other">Other</SelectItem>
+                    <SelectItem value="Noise">Noise</SelectItem>
+                    <SelectItem value="Garbage">Garbage</SelectItem>
+                    <SelectItem value="Infrastructure">Infrastructure</SelectItem>
+                    <SelectItem value="Other">Other</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -155,7 +151,7 @@ const Form = () => {
           </CardContent>
           <CardFooter className="flex justify-end">
             <Button type="submit">Submit Complaint</Button>
-            { errors.root && (<div className="text-red-500">errors.root.message</div>)}
+            { errors.root && <div className="text-red-500">{errors.root.message}</div>}
           </CardFooter>
         </form>
       </Card>
