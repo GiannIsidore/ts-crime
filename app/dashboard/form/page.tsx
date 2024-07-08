@@ -125,11 +125,9 @@ const Form = () => {
                 className="min-h-[150px]"
               />
             </div>
+            <Button type="submit">Submit Complaint</Button>
           </form>
         </CardContent>
-        <CardFooter className="flex justify-end">
-          <Button type="submit">Submit Complaint</Button>
-        </CardFooter>
       </Card>
     </div>
   );
