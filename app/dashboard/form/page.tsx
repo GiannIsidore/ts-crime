@@ -25,7 +25,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { error } from "console";
 
 const formSchema = z.object({
-  name: z.string().min(1, { message: "Required" }),
+  fname: z.string(),
+  mname: z.string(),
+  lname: z.string(),
   email: z.string().email(),
   number: z.string(),
   respondent: z.string(),
@@ -65,9 +67,9 @@ const Form = () => {
       console.log(userData);
     } catch (error) {
       console.error(error);
-      setError("root", {
-        message: "error",
-      });
+      // setError("root", {
+      //   message: "error",
+      // });
     }
   };
   // async function onSubmit() {
@@ -118,11 +120,29 @@ const Form = () => {
             <div className="grid gap-6">
               <div className="grid grid-cols-2 gap-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="name">Name</Label>
+                  <Label htmlFor="fname">Firstname</Label>
                   <Input
-                    {...register("name")}
-                    id="name"
-                    placeholder="Enter your full name"
+                    {...register("fname")}
+                    id="fname"
+                    placeholder="Enter your first name"
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="mname">Middlename (optional)</Label>
+                  <Input
+                    {...register("mname")}
+                    id="mname"
+                    placeholder="Enter your middle name"
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="lname">Lastname</Label>
+                  <Input
+                    {...register("lname")}
+                    id="lname"
+                    placeholder="Enter your last name"
                   />
                 </div>
                 <div className="grid gap-2">
