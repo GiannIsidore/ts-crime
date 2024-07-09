@@ -1,3 +1,10 @@
+import { Metadata } from 'next';
+import LoginForm from '@/components/login_form';
+
 export default function Home() {
-  return <h1>asd</h1>;
+  return (
+    <>
+      <LoginForm/>
+    </>
+  );
 }
