@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
     if (!$requestData) {
-        http_response_code(400); 
+        http_response_code(400);    
         echo json_encode(array('success' => false, 'message' => 'Invalid JSON data'));
         exit();
     }
