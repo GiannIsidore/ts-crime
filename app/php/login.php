@@ -11,7 +11,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $email = isset($data['email']) ? $data['email'] : null;
   $password = isset($data['password']) ? $data['password'] : null;
 
-  $sql = "SELECT `employee_id`, `employee_fname`, `employee_lname`, `employee_email`, `employee_password`, `employee_role`
+  $sql = "SELECT `employee_id`, `employee_fname`, `employee_lname`, `employee_email`, `employee_role`
     FROM employee_tbl
     WHERE employee_email = :email AND employee_password = :password";
 
@@ -23,15 +23,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
   if ($result) {
-    echo json_encode(array("data" => [ 
-      'message' => 'success', 
-      'status' => '200'
-    ]));
+
+    echo json_encode(array('data' => $result));
+    // echo json_encode(array("data" => [ 
+    //   'message' => 'Login Successful', 
+    // ]));
   }
   else {
     echo json_encode(array("error" => [ 
-      'message' => 'wrong credentials', 
-      'status' => '200'
+      'message' => 'Wrong Credentials, Please try again', 
     ]));
   }
 

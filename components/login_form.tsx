@@ -1,6 +1,7 @@
 "use client"
 import React from 'react';
 import Link from 'next/link';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -8,7 +9,6 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import FormTitle from '@/components/form_title';
-
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -22,22 +22,28 @@ const LoginForm = () => {
   const { register, handleSubmit, setValue, formState: { isSubmitting, isSubmitted, errors} } = useForm<LoginInput>({
     resolver: zodResolver(formSchema)
   });
-  const loginMessage = "";
+
+  const [ loginMessage, setLoginMessage] = useState();
 
   const onSubmit = async (data: LoginInput)  => {
     console.log(data)
     try {
-      const request = await fetch("/api/login", {
+      const request = await fetch("/api/auth/login", {
         method: "POST",
         headers: {
           "Content-type": "application/json"
         },
         body: JSON.stringify(data)
-      })
+      })  
 
       const response = await request.json();
-      const {data: userData, error} = await response;
-
+      const {message, error} = await response;
+      if (error) {
+        setLoginMessage(error.message)
+      }
+      else if (message) {
+        window.location.reload();
+      }
     } catch (err) {
       console.log(err)
     }
@@ -60,7 +66,7 @@ const LoginForm = () => {
               {errors.password && <div className="text-red-500 text-sm">{errors.password.message}</div>}
               <br />
               <Button className='w-full' type="submit">Login</Button>
-              {/* { loginMessage && <div className="text-red-500 text-base">{loginMessage}</div>} */}
+              { loginMessage && (<div className="text-red-500 text-base">{loginMessage}</div>)}
             </form>
           <br />
           <div>
