@@ -251,7 +251,7 @@ const Form = () => {
               </div>
             </div>
           </CardContent>
-          <CardFooter className="flex justify-end">
+          <CardFooter className="flex flex-col items-end justify-end">
             <Button type="submit" disabled={isSubmitting}>
               Submit Complaint
             </Button>
