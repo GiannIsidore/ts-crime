@@ -18,6 +18,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import getSession from "../api/auth/getSession/action";
+import LogoutButton from "@/components/logout_button";
 export const metadata: Metadata = {
   title: "Crime Complaints Database",
   description: "A database of crimes in Kauswagan, Cagayan de Oro City.",
@@ -31,6 +32,7 @@ export default async function RootLayout({
 
   const session = await getSession();
   console.log(session.user_fname)
+
 
   return (
     <html lang="en">
@@ -246,7 +248,9 @@ export default async function RootLayout({
                     <DropdownMenuItem>Settings</DropdownMenuItem>
                     <DropdownMenuItem>Support</DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>Logout</DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <LogoutButton/>
+                    </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>

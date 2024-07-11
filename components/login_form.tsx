@@ -19,14 +19,13 @@ type LoginInput = z.infer<typeof formSchema>;
 
 const LoginForm = () => {
 
-  const { register, handleSubmit, setValue, formState: { isSubmitting, isSubmitted, errors} } = useForm<LoginInput>({
+  const { register, handleSubmit, formState: { isSubmitting, isSubmitted, errors} } = useForm<LoginInput>({
     resolver: zodResolver(formSchema)
   });
 
   const [ loginMessage, setLoginMessage] = useState();
 
   const onSubmit = async (data: LoginInput)  => {
-    console.log(data)
     try {
       const request = await fetch("/api/auth/login", {
         method: "POST",
