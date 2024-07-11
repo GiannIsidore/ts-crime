@@ -16,9 +16,9 @@ interface ComplainDetails {
 
 export async function POST(req: NextRequest) {
   try {
-    const data: { data: ComplainDetails } = await req.json();
+    const { data }: { data: ComplainDetails } = await req.json();
 
-    console.log(data);
+    console.log("Received data from frontend:", data);
 
     //! Send data to  backend
     const response = await fetch(
@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ data }),
       }
     );
 

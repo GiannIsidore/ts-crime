@@ -1,9 +1,7 @@
 <?php
 
 include '../php/connection/connection.php';
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: POST");
-header("Access-Control-Allow-Headers: Content-Type");
+
 function handlePDOError(PDOException $e) {
     header("Content-Type: application/json");
     echo json_encode(array('success' => false, 'message' => 'PDO Error: ' . $e->getMessage()));
@@ -15,34 +13,34 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $content = trim(file_get_contents("php://input"));
     $requestData = json_decode($content, true);
-    error_log('Received data:');
-error_log(print_r($data, true));
+    error_log('Received data:' . $content);
+    error_log(print_r($content, true));
+
     if (!$requestData) {
-        http_response_code(400);
+        http_response_code(400); 
         echo json_encode(array('success' => false, 'message' => 'Invalid JSON data'));
         exit();
     }
 
-    // Check if 'data' key is present
+    //! Check if 'data' key is present para sa nested
     if (!isset($requestData['data'])) {
-        http_response_code(400);
+        http_response_code(400); // Bad Request
         echo json_encode(array('success' => false, 'message' => 'Missing data object'));
         exit();
     }
 
     $data = $requestData['data'];
 
-    // Check required fields
+    //! Check required fields 
     $requiredFields = ['fname', 'mname', 'lname', 'email', 'number', 'address', 'respondent', 'complaint_type', 'complaint_details'];
     foreach ($requiredFields as $field) {
         if (!isset($data[$field]) || empty(trim($data[$field]))) {
-            http_response_code(400);
+            http_response_code(400); 
             echo json_encode(array('success' => false, 'message' => 'Missing or empty required field: ' . $field));
             exit();
         }
     }
 
-    // Prepare data for insertion
     $complainantData = array(
         ':fname' => $data['fname'],
         ':mname' => $data['mname'],
@@ -54,20 +52,20 @@ error_log(print_r($data, true));
     );
 
     $respondentData = array(
-        ':respondent_name' => $data['respondent']
+        ':respondent_name' => $data['respondent'],
     );
 
     $caseData = array(
         ':place_of_occurrence' => $data['address'],
-        ':date_time_occurrence' => isset($data['date_occurrence']) ? $data['date_occurrence'] : date('Y-m-d H:i:s'),
+        ':date_time_occurrence' => date('Y-m-d H:i:s'), 
         ':complaint_type' => $data['complaint_type'],
         ':complaint_details' => $data['complaint_details']
     );
 
     try {
         $pdo->beginTransaction();
-
-        // Insert into complainants_tbl
+//!add function to check if complainant already exists
+        //? Insert into complainants_tbl
         $complainantsQuery = "INSERT INTO complainants_tbl (fname, mname, lname, email, number, address, age) 
                               VALUES (:fname, :mname, :lname, :email, :number, :address, :age)";
         $complainantsStmt = $pdo->prepare($complainantsQuery);
@@ -76,8 +74,8 @@ error_log(print_r($data, true));
         }
         $complainantsStmt->execute();
         $complainantId = $pdo->lastInsertId();
-
-        // Insert into respondents_tbl
+//!add function to check if respondent already exists
+        //? Insert into respondents_tbl
         $respondentsQuery = "INSERT INTO respondents_tbl (respondent_name) 
                              VALUES (:respondent_name)";
         $respondentsStmt = $pdo->prepare($respondentsQuery);
@@ -87,7 +85,7 @@ error_log(print_r($data, true));
         $respondentsStmt->execute();
         $respondentId = $pdo->lastInsertId();
 
-        // Insert into cases_tbl
+        //? Insert into cases_tbl
         $caseData[':complainant_id'] = $complainantId;
         $caseData[':respondent_id'] = $respondentId;
         $casesQuery = "INSERT INTO cases_tbl (complainant_id, respondent_id, place_of_occurrence, date_time_occurrence, complaint_type, complaint_details) 
@@ -101,8 +99,13 @@ error_log(print_r($data, true));
 
         $pdo->commit();
 
-        // Respond with success message
-        echo json_encode(array('success' => true, 'message' => 'Data inserted successfully', 'case_id' => $caseId));
+        $response = array(
+            'success' => true,
+            'message' => 'Data inserted successfully!',
+            'case_id' => $caseId
+        );
+
+        echo json_encode($response);
 
     } catch (PDOException $e) {
         $pdo->rollBack();
