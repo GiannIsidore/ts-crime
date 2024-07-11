@@ -15,6 +15,7 @@ interface ComplainDetails {
 
 export async function POST(req: NextRequest) {
   try {
+    console.log(true)
     const data: ComplainDetails = await req.json();
     console.log(data);
 
@@ -28,20 +29,18 @@ export async function POST(req: NextRequest) {
         body: JSON.stringify(data),
       }
     );
+    const response = await request.json();
 
-    // const response = await request.text();
-    // console.log(response)
-
-    const { data: userData, error} = await request.json();
-
+    const { data:userData, error} = await response;
     if(userData) {
       console.log(true);
-      console.log(userData)
+      return NextResponse.json({userData});
     }
     else if (error) {
       console.log(false)
+      return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
     }
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.error(err);
   }
 }

@@ -1,23 +1,31 @@
 <?php
 
 include '../php/connection/connection.php';
-
 header("Content-Type: application/json");
 
 
-$content = trim(file_get_contents("php://input"));
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   header("HTTP/1.1 405 Method Not Allowed");
-    $response = array(
-      'message' => 'success',
-      'status' => 200,
-  );
+  $content = trim(file_get_contents("php://input"));
 
-  header('Content-Type: application/json');
+  $stmt = "sql";
+
+  // $response = array(
+  //   'data' => 
+  //     ['message' => 'success',
+  //     'status' => 200]
+  // );
+
+  // $response = array(
+  //   'error' => 
+  //     ['message' => 'failed',
+  //     'status' => 400]
+  // );
+
   echo json_encode($response);
+  //   echo json_encode(array("error" => "Bad Request"));
 
-    return json_encode($response);
+    // return json_encode($response);
 
 }
 

@@ -22,7 +22,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { error } from "console";
 
 const formSchema = z.object({
   fname: z.string(),
@@ -63,13 +62,20 @@ const Form = () => {
       });
       const response = await request.json();
       console.log(response);
-      const { data: userData } = await response;
+      const { data: userData, error } = await response;
       console.log(userData);
-    } catch (error) {
-      console.error(error);
-      // setError("root", {
-      //   message: "error",
-      // });
+
+      if(userData) {
+        console.log(true)
+      }
+      else if (error) { 
+        console.log(false)
+      }
+    } catch (err) {
+      console.error(err);
+      setError("root", {
+        message: "An error occured",
+      });
     }
   };
   // async function onSubmit() {
