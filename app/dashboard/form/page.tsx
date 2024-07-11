@@ -61,31 +61,54 @@ const Form = () => {
         },
         body: JSON.stringify({ data }),
       });
+      const response = await request.json();
+      console.log(response);
+      const { data: userData, error } = await response;
+      console.log(userData);
 
-      if (!response.ok) {
-        const errorMessage = await response.text();
-        throw new Error(
-          `HTTP error! status: ${response.status}, message: ${errorMessage}`
-        );
+      if (userData) {
+        console.log(true);
+      } else if (error) {
+        console.log(false);
       }
-
-      const responseData = await response.json();
-      console.log(responseData);
-
-      if (!responseData.success) {
-        setError("root", {
-          message: responseData.message,
-        });
-        return;
-      }
-    } catch (error: any) {
-      console.error("Error sending data to PHP backend:", error);
+    } catch (err) {
+      console.error(err);
       setError("root", {
-        message: `Error sending data to PHP backend: ${error.message}`,
+        message: "An error occured",
       });
     }
   };
+  // async function onSubmit() {
+  //   try {
+  //     const response = await fetch(
+  //       "http://localhost:3000/api/handle_complain",
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify({
+  //           /* your data here */
+  //         }),
+  //       }
+  //     );
 
+  //     if (!response.ok) {
+  //       throw new Error(`HTTP error! status: ${response.status}`);
+  //     }
+
+  //     // Check if the response is JSON before parsing
+  //     const contentType = response.headers.get("content-type");
+  //     if (!contentType || !contentType.includes("application/json")) {
+  //       throw new Error("Received non-JSON response from the server");
+  //     }
+
+  //     const data = await response.json();
+  //     console.log(data);
+  //   } catch (error) {
+  //     console.error("Error during fetch operation:", error.message);
+  //   }
+  // }
   return (
     <div className="flex flex-1  w-fit  justify-center ">
       <Card className=" max-w-[80vw]   mx-auto p-3 sm:p-4 md:p-5">

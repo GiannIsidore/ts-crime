@@ -16,9 +16,9 @@ interface ComplainDetails {
 
 export async function POST(req: NextRequest) {
   try {
-    const { data }: { data: ComplainDetails } = await req.json();
-
-    console.log("Received data from frontend:", data);
+    console.log(true);
+    const data: ComplainDetails = await req.json();
+    console.log(data);
 
     //! Send data to  backend
     const response = await fetch(
@@ -31,32 +31,20 @@ export async function POST(req: NextRequest) {
         body: JSON.stringify({ data }),
       }
     );
+    const response = await request.json();
 
-    //? Check if  response  not OK
-    if (!response.ok) {
-      const errorMessage = await response.text();
-      throw new Error(
-        `HTTP error! status: ${response.status}, message: ${errorMessage}`
+    const { data: userData, error } = await response;
+    if (userData) {
+      console.log(true);
+      return NextResponse.json({ userData });
+    } else if (error) {
+      console.log(false);
+      return NextResponse.json(
+        { error: "Internal Server Error" },
+        { status: 500 }
       );
     }
-
-    //! Log backend response
-    const responseData = await response.json();
-    console.log("Response from PHP backend:", responseData);
-
-    return NextResponse.json({
-      success: true,
-      message: "Data sent successfully",
-      data: responseData,
-    });
-  } catch (error) {
-    console.error("Error sending data to PHP backend:", error);
-
-    const errorMessage = (error as Error).message;
-
-    return NextResponse.json({
-      success: false,
-      message: `Error sending data to PHP backend: ${errorMessage}`,
-    });
+  } catch (err) {
+    console.error(err);
   }
 }

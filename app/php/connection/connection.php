@@ -1,10 +1,8 @@
 <?php
-// ../php/connection/connection.php
-
-$host = 'localhost'; // Your database host
-$dbname = 'crime_db'; // Your database name
-$username = 'root'; // Your database username
-$password = ''; // Your database password
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "crime_db";
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
