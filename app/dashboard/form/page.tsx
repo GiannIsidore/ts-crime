@@ -65,11 +65,10 @@ const Form = () => {
       const { data: userData, error } = await response;
       console.log(userData);
 
-      if(userData) {
-        console.log(true)
-      }
-      else if (error) { 
-        console.log(false)
+      if (userData) {
+        console.log(true);
+      } else if (error) {
+        console.log(false);
       }
     } catch (err) {
       console.error(err);
