@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
     console.log(data);
 
     const request = await fetch(
-      "http://localhost/git/ts-crime/app/php/complain.php",
+      "http://localhost/3rdYear/ts-crime/app/php/complain.php",
       {
         method: "POST",
         headers: {
