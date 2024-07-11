@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
     console.log(data);
 
     const request = await fetch(
-      "http://localhost/3rdYear/ts-crime/app/php/complain.php",
+      "http://localhost/git/ts-crime/app/php/complain.php",
       {
         method: "POST",
         headers: {
@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({userData});
     }
     else if (error) {
-      console.log(false)
+      console.log(error)
       return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
     }
   } catch (err) {

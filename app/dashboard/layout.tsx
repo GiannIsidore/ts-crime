@@ -17,17 +17,21 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-
+import getSession from "../api/auth/getSession/action";
 export const metadata: Metadata = {
   title: "Crime Complaints Database",
   description: "A database of crimes in Kauswagan, Cagayan de Oro City.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+  const session = await getSession();
+  console.log(session.user_fname)
+
   return (
     <html lang="en">
       <body>
@@ -194,6 +198,7 @@ export default function RootLayout({
                           <AvatarImage src="/placeholder-user.jpg" />
                           <AvatarFallback>AC</AvatarFallback>
                         </Avatar>
+
                         <div className="grid gap-0.5">
                           <p className="font-medium">
                             Your password has been changed
@@ -209,12 +214,13 @@ export default function RootLayout({
                   </DropdownMenuContent>
                 </DropdownMenu>
                 <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
+                  <DropdownMenuTrigger asChild className="ml-3">
+                    {/* <Button
                       variant="outline"
                       size="icon"
                       className="overflow-hidden rounded-full"
                     >
+                      <div>
                       <img
                         src="/placeholder.svg"
                         width={36}
@@ -222,6 +228,16 @@ export default function RootLayout({
                         alt="Avatar"
                         className="overflow-hidden rounded-full"
                       />
+                      </div>
+                    </Button> */}
+                    <Button variant="outline" size="lg">
+                      <div className="flex items-center -mx-4">
+                        <Avatar>
+                          <AvatarImage/>
+                          <AvatarFallback>CN</AvatarFallback>
+                        </Avatar>
+                      <span>{session.user_fname}</span>
+                      </div>
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">

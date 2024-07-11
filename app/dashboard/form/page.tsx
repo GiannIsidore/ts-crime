@@ -72,9 +72,9 @@ const Form = () => {
       }
     } catch (err) {
       console.error(err);
-      setError("root", {
-        message: "An error occured",
-      });
+      // setError("root", {
+      //   message: "An error occured",
+      // });
     }
   };
   // async function onSubmit() {
