@@ -31,7 +31,7 @@ const formSchema = z.object({
   number: z.string(),
   respondent: z.string(),
   respondent_address: z.string(),
-  date_occurence: z.string().date(),
+  date_occurrence: z.string().date(),
   address: z.string(),
   complaint_type: z.string(),
   complaint_details: z.string(),
@@ -44,7 +44,7 @@ const Form = () => {
     register,
     handleSubmit,
     setValue,
-    formState: { errors, isSubmitting, isSubmitted },
+    formState: { errors, isSubmitting },
     setError,
   } = useForm<ComplainInput>({
     resolver: zodResolver(formSchema),
@@ -52,65 +52,43 @@ const Form = () => {
 
   const onSubmit: SubmitHandler<ComplainInput> = async (data) => {
     console.log(data);
+
     try {
-      const request = await fetch("http://localhost:3000/api/handle_complain", {
+      const response = await fetch("/api/handle_complain", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ data }),
       });
-      const response = await request.json();
-      console.log(response);
-      const { data: userData, error } = await response;
-      console.log(userData);
 
-      if (userData) {
-        console.log(true);
-      } else if (error) {
-        console.log(false);
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(
+          `HTTP error! status: ${response.status}, message: ${errorMessage}`
+        );
       }
-    } catch (err) {
-      console.error(err);
+
+      const responseData = await response.json();
+      console.log(responseData);
+
+      if (!responseData.success) {
+        setError("root", {
+          message: responseData.message,
+        });
+        return;
+      }
+    } catch (error: any) {
+      console.error("Error sending data to PHP backend:", error);
       setError("root", {
-        message: "An error occured",
+        message: `Error sending data to PHP backend: ${error.message}`,
       });
     }
   };
-  // async function onSubmit() {
-  //   try {
-  //     const response = await fetch(
-  //       "http://localhost:3000/api/handle_complain",
-  //       {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify({
-  //           /* your data here */
-  //         }),
-  //       }
-  //     );
 
-  //     if (!response.ok) {
-  //       throw new Error(`HTTP error! status: ${response.status}`);
-  //     }
-
-  //     // Check if the response is JSON before parsing
-  //     const contentType = response.headers.get("content-type");
-  //     if (!contentType || !contentType.includes("application/json")) {
-  //       throw new Error("Received non-JSON response from the server");
-  //     }
-
-  //     const data = await response.json();
-  //     console.log(data);
-  //   } catch (error) {
-  //     console.error("Error during fetch operation:", error.message);
-  //   }
-  // }
   return (
     <div>
-      <Card className="w-full max-w-6xl mx-auto p-3 sm:p-4 md:p-5">
+      <Card className="w-full max-w-2xl mx-auto p-3 sm:p-4 md:p-5">
         <form onSubmit={handleSubmit(onSubmit)}>
           <CardHeader>
             <CardTitle className="text-3xl font-bold">
@@ -131,6 +109,9 @@ const Form = () => {
                     id="fname"
                     placeholder="Enter your first name"
                   />
+                  {errors.fname && (
+                    <span className="text-red-500">{errors.fname.message}</span>
+                  )}
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="mname">Middlename (optional)</Label>
@@ -149,6 +130,9 @@ const Form = () => {
                     id="lname"
                     placeholder="Enter your last name"
                   />
+                  {errors.lname && (
+                    <span className="text-red-500">{errors.lname.message}</span>
+                  )}
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="email">Email (optional)</Label>
@@ -158,6 +142,9 @@ const Form = () => {
                     type="email"
                     placeholder="Enter your email"
                   />
+                  {errors.email && (
+                    <span className="text-red-500">{errors.email.message}</span>
+                  )}
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
@@ -169,6 +156,11 @@ const Form = () => {
                     type="tel"
                     placeholder="Enter your phone number"
                   />
+                  {errors.number && (
+                    <span className="text-red-500">
+                      {errors.number.message}
+                    </span>
+                  )}
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="respondents">Who are the respondents?</Label>
@@ -177,22 +169,26 @@ const Form = () => {
                     id="respondents"
                     placeholder="Enter the respondents"
                   />
+                  {errors.respondent && (
+                    <span className="text-red-500">
+                      {errors.respondent.message}
+                    </span>
+                  )}
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="grid gap-2">
                   <Label htmlFor="when-happened">When did it happen?</Label>
                   <Input
-                    {...register("date_occurence")}
+                    {...register("date_occurrence")}
                     id="when-happened"
                     type="date"
                   />
-                  {/* <input
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    {...register("date_occurence")}
-                    id="when-happened"
-                    type="date"
-                  /> */}
+                  {errors.date_occurrence && (
+                    <span className="text-red-500">
+                      {errors.date_occurrence.message}
+                    </span>
+                  )}
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="respondents-address">
@@ -212,17 +208,17 @@ const Form = () => {
                   id="address"
                   placeholder="Enter your address"
                 />
+                {errors.address && (
+                  <span className="text-red-500">{errors.address.message}</span>
+                )}
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="complaint_type">Type of Complaint</Label>
                 <Select
-                  onValueChange={(event) => setValue("complaint_type", event)}
+                  onValueChange={(value) => setValue("complaint_type", value)}
                 >
                   <SelectTrigger id="complaint_type">
-                    <SelectValue
-                      {...register("complaint_type")}
-                      placeholder="Select complaint type"
-                    />
+                    <SelectValue placeholder="Select complaint type" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="noise">Noise</SelectItem>
@@ -233,6 +229,11 @@ const Form = () => {
                     <SelectItem value="other">Other</SelectItem>
                   </SelectContent>
                 </Select>
+                {errors.complaint_type && (
+                  <span className="text-red-500">
+                    {errors.complaint_type.message}
+                  </span>
+                )}
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="complaint">Complaint Details</Label>
@@ -242,13 +243,20 @@ const Form = () => {
                   placeholder="Describe the issue in detail"
                   className="min-h-[150px]"
                 />
+                {errors.complaint_details && (
+                  <span className="text-red-500">
+                    {errors.complaint_details.message}
+                  </span>
+                )}
               </div>
             </div>
           </CardContent>
           <CardFooter className="flex justify-end">
-            <Button type="submit">Submit Complaint</Button>
+            <Button type="submit" disabled={isSubmitting}>
+              Submit Complaint
+            </Button>
             {errors.root && (
-              <div className="text-red-500">{errors.root.message}</div>
+              <div className="text-red-500 ml-4">{errors.root.message}</div>
             )}
           </CardFooter>
         </form>

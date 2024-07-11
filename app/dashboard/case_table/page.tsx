@@ -1,17 +1,12 @@
 "use client";
+import { useState, useEffect } from "react";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-
-import React, { useState, useMemo } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@/components/ui/card";
 import {
   Table,
   TableHeader,
@@ -21,270 +16,156 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import {
+  Drawer,
+  DrawerTrigger,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerClose,
+} from "@/components/ui/drawer";
+interface Case {
+  case_id: number;
+  complainant: string;
+  respondent: string;
+  place_of_occurrence: string;
+  date_time_occurrence: string;
+  complaint_type: string;
+  complaint_details: string;
+}
 
-export default function Component() {
-  const [search, setSearch] = useState("");
-  const [sort, setSort] = useState({ key: "dateTime", order: "asc" });
-  //! This is a dummy data. Replace it with actual data from the database.... HOW?
-  const complaints = useMemo(
-    () =>
-      [
-        {
-          caseId: "C001",
-          complainantName: "John Doe",
-          respondentName: "Jane Smith",
-          placeOfOccurrence: "123 Main St, Anytown USA",
-          dateTime: "2023-06-01 10:30 AM",
-          complaintType: "Harassment",
-          complaintDetails:
-            "Respondent has been making inappropriate comments.",
-          status: "Pending",
-          employeeName: "Alice Johnson",
-        },
-      ]
-        .filter((complaint) => {
-          const searchValue = search.toLowerCase();
-          return (
-            complaint.caseId.toLowerCase().includes(searchValue) ||
-            complaint.complainantName.toLowerCase().includes(searchValue) ||
-            complaint.respondentName.toLowerCase().includes(searchValue) ||
-            complaint.placeOfOccurrence.toLowerCase().includes(searchValue) ||
-            complaint.complaintType.toLowerCase().includes(searchValue) ||
-            complaint.status.toLowerCase().includes(searchValue) ||
-            complaint.employeeName.toLowerCase().includes(searchValue)
-          );
-        })
-        .sort((a, b) => {
-          const key = sort.key as keyof typeof a;
-          if (sort.order === "asc") {
-            return a[key] > b[key] ? 1 : -1;
-          } else {
-            return a[key] < b[key] ? 1 : -1;
-          }
-        }),
-    [search, sort]
-  );
+export default function CaseTable() {
+  const [cases, setCases] = useState<Case[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost/3rdYear/ts-crime/app/php/case_fetch.php"
+        );
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        setCases(data.cases);
+      } catch (error) {
+        setError("Error fetching data");
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
+
   return (
-    <div className="flex flex-col w-full">
-      <div className="flex items-center justify-between mb-4">
-        <Input
-          placeholder="Search complaints..."
-          className="bg-white dark:bg-gray-950 flex-1 mr-4"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <div className="flex items-center space-x-2">
-          <Button variant="outline" size="sm">
-            Export
-          </Button>
-          <Button size="sm">New Complaint</Button>
-        </div>
-      </div>
-      <Card>
+    <Card className="w-full">
+      <CardHeader>
+        <CardTitle>Complaint Tracker</CardTitle>
+        <CardDescription>
+          View and manage all complaints filed with your organization.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead
-                className="cursor-pointer"
-                onClick={() =>
-                  setSort({
-                    key: "caseId",
-                    order:
-                      sort.key === "caseId"
-                        ? sort.order === "asc"
-                          ? "desc"
-                          : "asc"
-                        : "asc",
-                  })
-                }
-              >
-                Case ID
-                {sort.key === "caseId" && (
-                  <span className="ml-1">
-                    {sort.order === "asc" ? "\u2191" : "\u2193"}
-                  </span>
-                )}
-              </TableHead>
-              <TableHead
-                className="cursor-pointer"
-                onClick={() =>
-                  setSort({
-                    key: "complainantName",
-                    order:
-                      sort.key === "complainantName"
-                        ? sort.order === "asc"
-                          ? "desc"
-                          : "asc"
-                        : "asc",
-                  })
-                }
-              >
-                Complainant
-                {sort.key === "complainantName" && (
-                  <span className="ml-1">
-                    {sort.order === "asc" ? "\u2191" : "\u2193"}
-                  </span>
-                )}
-              </TableHead>
-              <TableHead
-                className="cursor-pointer"
-                onClick={() =>
-                  setSort({
-                    key: "respondentName",
-                    order:
-                      sort.key === "respondentName"
-                        ? sort.order === "asc"
-                          ? "desc"
-                          : "asc"
-                        : "asc",
-                  })
-                }
-              >
-                Respondent
-                {sort.key === "respondentName" && (
-                  <span className="ml-1">
-                    {sort.order === "asc" ? "\u2191" : "\u2193"}
-                  </span>
-                )}
-              </TableHead>
-              <TableHead
-                className="cursor-pointer"
-                onClick={() =>
-                  setSort({
-                    key: "placeOfOccurrence",
-                    order:
-                      sort.key === "placeOfOccurrence"
-                        ? sort.order === "asc"
-                          ? "desc"
-                          : "asc"
-                        : "asc",
-                  })
-                }
-              >
-                Place
-                {sort.key === "placeOfOccurrence" && (
-                  <span className="ml-1">
-                    {sort.order === "asc" ? "\u2191" : "\u2193"}
-                  </span>
-                )}
-              </TableHead>
-              <TableHead
-                className="cursor-pointer"
-                onClick={() =>
-                  setSort({
-                    key: "dateTime",
-                    order:
-                      sort.key === "dateTime"
-                        ? sort.order === "asc"
-                          ? "desc"
-                          : "asc"
-                        : "asc",
-                  })
-                }
-              >
-                Date & Time
-                {sort.key === "dateTime" && (
-                  <span className="ml-1">
-                    {sort.order === "asc" ? "\u2191" : "\u2193"}
-                  </span>
-                )}
-              </TableHead>
-              <TableHead
-                className="cursor-pointer"
-                onClick={() =>
-                  setSort({
-                    key: "complaintType",
-                    order:
-                      sort.key === "complaintType"
-                        ? sort.order === "asc"
-                          ? "desc"
-                          : "asc"
-                        : "asc",
-                  })
-                }
-              >
-                Type
-                {sort.key === "complaintType" && (
-                  <span className="ml-1">
-                    {sort.order === "asc" ? "\u2191" : "\u2193"}
-                  </span>
-                )}
-              </TableHead>
-              <TableHead
-                className="cursor-pointer"
-                onClick={() =>
-                  setSort({
-                    key: "status",
-                    order:
-                      sort.key === "status"
-                        ? sort.order === "asc"
-                          ? "desc"
-                          : "asc"
-                        : "asc",
-                  })
-                }
-              >
-                Status
-                {sort.key === "status" && (
-                  <span className="ml-1">
-                    {sort.order === "asc" ? "\u2191" : "\u2193"}
-                  </span>
-                )}
-              </TableHead>
-              <TableHead
-                className="cursor-pointer"
-                onClick={() =>
-                  setSort({
-                    key: "employeeName",
-                    order:
-                      sort.key === "employeeName"
-                        ? sort.order === "asc"
-                          ? "desc"
-                          : "asc"
-                        : "asc",
-                  })
-                }
-              >
-                Employee
-                {sort.key === "employeeName" && (
-                  <span className="ml-1">
-                    {sort.order === "asc" ? "\u2191" : "\u2193"}
-                  </span>
-                )}
-              </TableHead>
+              <TableHead>Complainant</TableHead>
+              <TableHead>Respondent</TableHead>
+              <TableHead>Case ID</TableHead>
+              <TableHead>Location</TableHead>
+              <TableHead>Date/Time</TableHead>
+              <TableHead>Type</TableHead>
+              <TableHead>Details</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Employee</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {complaints.map((complaint) => (
-              <TableRow key={complaint.caseId}>
-                <TableCell className="font-medium">
-                  {complaint.caseId}
-                </TableCell>
-                <TableCell>{complaint.complainantName}</TableCell>
-                <TableCell>{complaint.respondentName}</TableCell>
-                <TableCell>{complaint.placeOfOccurrence}</TableCell>
-                <TableCell>{complaint.dateTime}</TableCell>
-                <TableCell>{complaint.complaintType}</TableCell>
+            {cases.map((caseItem) => (
+              <TableRow key={caseItem.case_id}>
                 <TableCell>
-                  <Badge
-                    variant={
-                      complaint.status === "Resolved"
-                        ? "secondary"
-                        : complaint.status === "Pending"
-                        ? "outline"
-                        : "destructive"
-                    }
-                  >
-                    {complaint.status}
+                  <div className="font-medium">{caseItem.complainant}</div>
+                </TableCell>
+                <TableCell>
+                  <div className="font-medium">{caseItem.respondent}</div>
+                </TableCell>
+                <TableCell>
+                  <div className="font-medium">{caseItem.case_id}</div>
+                </TableCell>
+                <TableCell>
+                  <div>{caseItem.place_of_occurrence}</div>
+                </TableCell>
+                <TableCell>
+                  <div>{caseItem.date_time_occurrence}</div>
+                </TableCell>
+                <TableCell>
+                  <Badge className="text-xs" variant="secondary">
+                    {caseItem.complaint_type}
                   </Badge>
                 </TableCell>
-                <TableCell>{complaint.employeeName}</TableCell>
+                <TableCell>
+                  <Drawer>
+                    <DrawerTrigger asChild>
+                      <Button variant="outline">Open Case</Button>
+                    </DrawerTrigger>
+                    <DrawerContent>
+                      <DrawerHeader className="flex justify-between items-center">
+                        <div>
+                          <DrawerTitle className="py-2">
+                            {caseItem.complaint_type}
+                          </DrawerTitle>
+                          <DrawerDescription>
+                            CASE ID:{caseItem.case_id}{" "}
+                          </DrawerDescription>
+                          <br />
+                          <p className=" text-sm">COMPLAINANT</p>
+                          <p className=" text-sm">- {caseItem.complainant}</p>
+                        </div>
+                        <div className="text-muted-foreground text-sm">
+                          {caseItem.date_time_occurrence}
+                        </div>
+                      </DrawerHeader>
+                      <div className="px-4 py-6 prose prose-sm prose-gray dark:prose-invert">
+                        <p>{caseItem.complaint_details}</p>
+                      </div>
+                      <DrawerFooter>
+                        <DrawerClose asChild>
+                          <Button variant="outline">Cancel</Button>
+                        </DrawerClose>
+                      </DrawerFooter>
+                    </DrawerContent>
+                  </Drawer>
+                </TableCell>
+                <TableCell>
+                  <Badge className="text-xs" variant="secondary">
+                    Resolved
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <div className="font-medium">WALA PAY EMPLOYEE</div>
+                </TableCell>
                 <TableCell className="text-right">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" size="icon">
-                        <MoveHorizontalIcon className="h-4 w-4" />
+                        <MoveVerticalIcon className="h-4 w-4" />
                         <span className="sr-only">More actions</span>
                       </Button>
                     </DropdownMenuTrigger>
@@ -300,12 +181,12 @@ export default function Component() {
             ))}
           </TableBody>
         </Table>
-      </Card>
-    </div>
+      </CardContent>
+    </Card>
   );
 }
 
-function MoveHorizontalIcon(props: React.SVGProps<SVGSVGElement>) {
+function MoveVerticalIcon(props: React.ComponentProps<"svg">) {
   return (
     <svg
       {...props}
@@ -319,14 +200,14 @@ function MoveHorizontalIcon(props: React.SVGProps<SVGSVGElement>) {
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      <polyline points="18 8 22 12 18 16" />
-      <polyline points="6 8 2 12 6 16" />
-      <line x1="2" x2="22" y1="12" y2="12" />
+      <polyline points="8 18 12 22 16 18" />
+      <polyline points="8 6 12 2 16 6" />
+      <line x1="12" x2="12" y1="2" y2="22" />
     </svg>
   );
 }
 
-function XIcon(props: React.SVGProps<SVGSVGElement>) {
+function XIcon(props: React.ComponentProps<"svg">) {
   return (
     <svg
       {...props}

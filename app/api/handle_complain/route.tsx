@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { useState } from "react"; // Import useState if managing state in a React component
 
 interface ComplainDetails {
   fname: string;
@@ -20,7 +21,7 @@ export async function POST(req: NextRequest) {
 
     console.log("Received data from frontend:", data);
 
-    //! Send data to  backend
+    //! Send data to backend
     const response = await fetch(
       "http://localhost/3rdYear/ts-crime/app/php/comp.php",
       {
@@ -32,7 +33,7 @@ export async function POST(req: NextRequest) {
       }
     );
 
-    //? Check if  response  not OK
+    // Check if response is not OK
     if (!response.ok) {
       const errorMessage = await response.text();
       throw new Error(
@@ -40,10 +41,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    //! Log backend response
+    // Log backend response
     const responseData = await response.json();
     console.log("Response from PHP backend:", responseData);
 
+    // Return success response
     return NextResponse.json({
       success: true,
       message: "Data sent successfully",
@@ -54,6 +56,7 @@ export async function POST(req: NextRequest) {
 
     const errorMessage = (error as Error).message;
 
+    // Return error response
     return NextResponse.json({
       success: false,
       message: `Error sending data to PHP backend: ${errorMessage}`,

@@ -54,7 +54,7 @@ const Form = () => {
     console.log(data);
 
     try {
-      const response = await fetch("/api/handle_complain", {
+      const response = await fetch("/app/api/handle_complain", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
