@@ -8,6 +8,7 @@ header("Access-Control-Allow-Method: Content-Type, Authorization");
 try {
     $query = "
         SELECT 
+            c.status,
             c.case_id,
             c.complainant_id,
             c.respondent_id,
@@ -38,7 +39,8 @@ try {
             'place_of_occurrence' => $case['place_of_occurrence'],
             'date_time_occurrence' => $case['date_time_occurrence'],
             'complaint_type' => $case['complaint_type'],
-            'complaint_details' => $case['complaint_details']
+            'complaint_details' => $case['complaint_details'],
+            'status' => $case['status']
         );
 
         $formattedCases[] = $formattedCase;

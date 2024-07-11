@@ -33,6 +33,7 @@ import {
   DrawerFooter,
   DrawerClose,
 } from "@/components/ui/drawer";
+
 interface Case {
   case_id: number;
   complainant: string;
@@ -41,6 +42,7 @@ interface Case {
   date_time_occurrence: string;
   complaint_type: string;
   complaint_details: string;
+  status: number;
 }
 
 export default function CaseTable() {
@@ -69,6 +71,67 @@ export default function CaseTable() {
 
     fetchData();
   }, []);
+
+  const updateStatus = async (case_id: number, newStatus: number) => {
+    try {
+      const response = await fetch(
+        "http://localhost/3rdYear/ts-crime/app/php/update_case_status.php",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ case_id, status: newStatus }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to update status: ${errorText}`);
+      }
+
+      const result = await response.json();
+      console.log(result);
+
+      const updatedCases = cases.map((caseItem) =>
+        caseItem.case_id === case_id
+          ? { ...caseItem, status: newStatus }
+          : caseItem
+      );
+      setCases(updatedCases);
+    } catch (error) {
+      console.error("Error updating status:", error);
+    }
+  };
+
+  const getStatusBadge = (status: number) => {
+    switch (status) {
+      case 1:
+        return (
+          <Badge className="text-xs" variant="secondary">
+            Pending
+          </Badge>
+        );
+      case 2:
+        return (
+          <Badge className="text-xs" variant="default">
+            Resolved
+          </Badge>
+        );
+      case 3:
+        return (
+          <Badge className="text-xs" variant="destructive">
+            Unresolved
+          </Badge>
+        );
+      default:
+        return (
+          <Badge className="text-xs" variant="secondary">
+            Unknown
+          </Badge>
+        );
+    }
+  };
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
@@ -153,11 +216,7 @@ export default function CaseTable() {
                     </DrawerContent>
                   </Drawer>
                 </TableCell>
-                <TableCell>
-                  <Badge className="text-xs" variant="secondary">
-                    Resolved
-                  </Badge>
-                </TableCell>
+                <TableCell>{getStatusBadge(caseItem.status)}</TableCell>
                 <TableCell>
                   <div className="font-medium">WALA PAY EMPLOYEE</div>
                 </TableCell>
@@ -170,10 +229,23 @@ export default function CaseTable() {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem>View Details</DropdownMenuItem>
-                      <DropdownMenuItem>Update Status</DropdownMenuItem>
-                      <DropdownMenuItem>Assign to Employee</DropdownMenuItem>
-                      <DropdownMenuItem>Close Complaint</DropdownMenuItem>
+                      <DropdownMenuItem>Update Case</DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => updateStatus(caseItem.case_id, 1)}
+                      >
+                        Set to Pending
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => updateStatus(caseItem.case_id, 2)}
+                      >
+                        Set to Resolved
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => updateStatus(caseItem.case_id, 3)}
+                      >
+                        Set to Unresolved
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>Close Case</DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>
