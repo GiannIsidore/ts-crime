@@ -130,8 +130,8 @@ export default function RootLayout({
               </TooltipProvider>
             </div>
           </aside>
-          <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
-            <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
+          <div className="flex flex-col md:w-full sm:gap-4 sm:py-4 sm:pl-14">
+            <header className="sticky top-0 z-30 flex h-14 justify-between items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
               <div className="relative flex-1 md:grow-0">
                 <div className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
@@ -140,95 +140,100 @@ export default function RootLayout({
                   className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
                 />
               </div>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="overflow-hidden rounded-full"
-                  >
-                    <BellIcon className="h-5 w-5" />
-                    <span className="sr-only">Notifications</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>Notifications</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>
-                    <div className="flex items-center gap-2">
-                      <Avatar className="h-8 w-8">
-                        <AvatarImage src="/placeholder-user.jpg" />
-                        <AvatarFallback>AC</AvatarFallback>
-                      </Avatar>
-                      <div className="grid gap-0.5">
-                        <p className="font-medium">New message from Acme Inc</p>
-                        <p className="text-xs text-muted-foreground">
-                          2 hours ago
-                        </p>
-                      </div>
-                    </div>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <div className="flex items-center gap-2">
-                      <Avatar className="h-8 w-8">
-                        <AvatarImage src="/placeholder-user.jpg" />
-                        <AvatarFallback>AC</AvatarFallback>
-                      </Avatar>
-                      <div className="grid gap-0.5">
-                        <p className="font-medium">
-                          Your order has been shipped
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          1 day ago
-                        </p>
-                      </div>
-                    </div>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <div className="flex items-center gap-2">
-                      <Avatar className="h-8 w-8">
-                        <AvatarImage src="/placeholder-user.jpg" />
-                        <AvatarFallback>AC</AvatarFallback>
-                      </Avatar>
-                      <div className="grid gap-0.5">
-                        <p className="font-medium">
-                          Your password has been changed
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          2 days ago
-                        </p>
-                      </div>
-                    </div>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>View all notifications</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="overflow-hidden rounded-full"
-                  >
-                    <img
-                      src="/placeholder.svg"
-                      width={36}
-                      height={36}
-                      alt="Avatar"
+              <div className="flex items-center justify-center ">
+                {" "}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
                       className="overflow-hidden rounded-full"
-                    />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>Settings</DropdownMenuItem>
-                  <DropdownMenuItem>Support</DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>Logout</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                    >
+                      <BellIcon className="h-5 w-5" />
+                      <span className="sr-only">Notifications</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem>
+                      <div className="flex items-center gap-2">
+                        <Avatar className="h-8 w-8">
+                          <AvatarImage src="/placeholder-user.jpg" />
+                          <AvatarFallback>AC</AvatarFallback>
+                        </Avatar>
+                        <div className="grid gap-0.5">
+                          <p className="font-medium">
+                            New message from Acme Inc
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            2 hours ago
+                          </p>
+                        </div>
+                      </div>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <div className="flex items-center gap-2">
+                        <Avatar className="h-8 w-8">
+                          <AvatarImage src="/placeholder-user.jpg" />
+                          <AvatarFallback>AC</AvatarFallback>
+                        </Avatar>
+                        <div className="grid gap-0.5">
+                          <p className="font-medium">
+                            Your order has been shipped
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            1 day ago
+                          </p>
+                        </div>
+                      </div>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <div className="flex items-center gap-2">
+                        <Avatar className="h-8 w-8">
+                          <AvatarImage src="/placeholder-user.jpg" />
+                          <AvatarFallback>AC</AvatarFallback>
+                        </Avatar>
+                        <div className="grid gap-0.5">
+                          <p className="font-medium">
+                            Your password has been changed
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            2 days ago
+                          </p>
+                        </div>
+                      </div>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem>View all notifications</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="overflow-hidden rounded-full"
+                    >
+                      <img
+                        src="/placeholder.svg"
+                        width={36}
+                        height={36}
+                        alt="Avatar"
+                        className="overflow-hidden rounded-full"
+                      />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem>Settings</DropdownMenuItem>
+                    <DropdownMenuItem>Support</DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem>Logout</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
             </header>
             <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
               {children}

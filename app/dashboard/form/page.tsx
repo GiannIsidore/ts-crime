@@ -110,7 +110,7 @@ const Form = () => {
   // }
   return (
     <div>
-      <Card className="w-full max-w-2xl mx-auto p-3 sm:p-4 md:p-5">
+      <Card className="w-full max-w-6xl mx-auto p-3 sm:p-4 md:p-5">
         <form onSubmit={handleSubmit(onSubmit)}>
           <CardHeader>
             <CardTitle className="text-3xl font-bold">
