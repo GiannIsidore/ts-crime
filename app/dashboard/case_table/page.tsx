@@ -25,6 +25,7 @@ import { Badge } from "@/components/ui/badge";
 export default function Component() {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState({ key: "dateTime", order: "asc" });
+  //! This is a dummy data. Replace it with actual data from the database.... HOW?
   const complaints = useMemo(
     () =>
       [

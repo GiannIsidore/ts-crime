@@ -20,7 +20,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 export const metadata: Metadata = {
-  title: "CCDB - Crime Complaint Database",
+  title: "CCDB - Admin Dashboard",
   description: "A database of crimes in Kauswagan, Cagayan de Oro City.",
   icons: {
     icon: "/cdb.svg",
@@ -39,7 +39,7 @@ export default function RootLayout({
           <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
             <div className="flex flex-col items-center gap-4 px-2 py-5">
               <Link
-                href="/dashboard"
+                href="/admin_dashboard/admin_view"
                 className="group flex h-9 w-9 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:h-8 md:w-8 md:text-base"
                 prefetch={false}
               >
@@ -56,7 +56,7 @@ export default function RootLayout({
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Link
-                        href="/dashboard/form"
+                        href="/admin_dashboard/form"
                         className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-accent-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                         prefetch={false}
                       >
@@ -71,7 +71,7 @@ export default function RootLayout({
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Link
-                        href="/dashboard/case_table"
+                        href="/admin_dashboard/case_table"
                         className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                         prefetch={false}
                       >
@@ -82,7 +82,20 @@ export default function RootLayout({
                     <TooltipContent side="right">Cases</TooltipContent>
                   </Tooltip>
 
-                  {/* <Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Link
+                        href="#"
+                        className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+                        prefetch={false}
+                      >
+                        <UsersIcon className="h-5 w-5" />
+                        <span className="sr-only">Employees</span>
+                      </Link>
+                    </TooltipTrigger>
+                    <TooltipContent side="right">Employees</TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
                     <TooltipTrigger asChild>
                       <Link
                         href="#"
@@ -94,7 +107,7 @@ export default function RootLayout({
                       </Link>
                     </TooltipTrigger>
                     <TooltipContent side="right">Settings</TooltipContent>
-                  </Tooltip> */}
+                  </Tooltip>
                 </TooltipProvider>
               </nav>
             </div>

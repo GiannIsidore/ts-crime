@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+
 interface ComplainDetails {
   fname: string;
   mname: string;
@@ -7,7 +8,7 @@ interface ComplainDetails {
   number: string;
   respondent: string;
   respondent_address: string;
-  date_occurence: string;
+  date_occurrence: string;
   address: string;
   complaint_type: string;
   complaint_details: string;
@@ -15,32 +16,47 @@ interface ComplainDetails {
 
 export async function POST(req: NextRequest) {
   try {
-    console.log(true)
-    const data: ComplainDetails = await req.json();
+    const data: { data: ComplainDetails } = await req.json();
+
     console.log(data);
 
-    const request = await fetch(
-      "http://localhost/3rdYear/ts-crime/app/php/complain.php",
+    //! Send data to  backend
+    const response = await fetch(
+      "http://localhost/3rdYear/ts-crime/app/php/comp.php",
       {
         method: "POST",
         headers: {
-          "Content-type": "application/json",
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
       }
     );
-    const response = await request.json();
 
-    const { data:userData, error} = await response;
-    if(userData) {
-      console.log(true);
-      return NextResponse.json({userData});
+    //? Check if  response  not OK
+    if (!response.ok) {
+      const errorMessage = await response.text();
+      throw new Error(
+        `HTTP error! status: ${response.status}, message: ${errorMessage}`
+      );
     }
-    else if (error) {
-      console.log(false)
-      return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
-    }
-  } catch (err) {
-    console.error(err);
+
+    //! Log backend response
+    const responseData = await response.json();
+    console.log("Response from PHP backend:", responseData);
+
+    return NextResponse.json({
+      success: true,
+      message: "Data sent successfully",
+      data: responseData,
+    });
+  } catch (error) {
+    console.error("Error sending data to PHP backend:", error);
+
+    const errorMessage = (error as Error).message;
+
+    return NextResponse.json({
+      success: false,
+      message: `Error sending data to PHP backend: ${errorMessage}`,
+    });
   }
 }
