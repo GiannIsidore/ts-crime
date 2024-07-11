@@ -216,20 +216,15 @@ export default function CaseTable() {
                     </DrawerContent>
                   </Drawer>
                 </TableCell>
-                <TableCell>{getStatusBadge(caseItem.status)}</TableCell>
                 <TableCell>
-                  <div className="font-medium">WALA PAY EMPLOYEE</div>
-                </TableCell>
-                <TableCell className="text-right">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon">
-                        <MoveVerticalIcon className="h-4 w-4" />
-                        <span className="sr-only">More actions</span>
-                      </Button>
+                      <button className="outline-none">
+                        {" "}
+                        {getStatusBadge(caseItem.status)}
+                      </button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem>Update Case</DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={() => updateStatus(caseItem.case_id, 1)}
                       >
@@ -245,6 +240,23 @@ export default function CaseTable() {
                       >
                         Set to Unresolved
                       </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
+                <TableCell>
+                  <div className="font-medium">WALA PAY EMPLOYEE</div>
+                </TableCell>
+                <TableCell className="text-right">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon">
+                        <MoveVerticalIcon className="h-4 w-4" />
+                        <span className="sr-only">More actions</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem>Update Case</DropdownMenuItem>
+
                       <DropdownMenuItem>Close Case</DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>

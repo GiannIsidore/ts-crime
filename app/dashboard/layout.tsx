@@ -145,7 +145,7 @@ export default function RootLayout({
                     <DropdownMenuItem>
                       <div className="flex items-center gap-2">
                         <Avatar className="h-8 w-8">
-                          <AvatarImage src="/placeholder-user.jpg" />
+                          <AvatarImage src="/assets/images/unnamed.jpg" />
                           <AvatarFallback>AC</AvatarFallback>
                         </Avatar>
                         <div className="grid gap-0.5">
@@ -161,7 +161,7 @@ export default function RootLayout({
                     <DropdownMenuItem>
                       <div className="flex items-center gap-2">
                         <Avatar className="h-8 w-8">
-                          <AvatarImage src="/placeholder-user.jpg" />
+                          <AvatarImage src="/assets/images/unnamed.jpg" />
                           <AvatarFallback>AC</AvatarFallback>
                         </Avatar>
                         <div className="grid gap-0.5">
@@ -177,7 +177,7 @@ export default function RootLayout({
                     <DropdownMenuItem>
                       <div className="flex items-center gap-2">
                         <Avatar className="h-8 w-8">
-                          <AvatarImage src="/placeholder-user.jpg" />
+                          <AvatarImage src="/assets/images/unnamed.jpg" />
                           <AvatarFallback>AC</AvatarFallback>
                         </Avatar>
                         <div className="grid gap-0.5">
@@ -202,7 +202,7 @@ export default function RootLayout({
                       className="overflow-hidden rounded-full"
                     >
                       <img
-                        src="/placeholder.svg"
+                        src="/assets/images/duckooo.gif"
                         width={36}
                         height={36}
                         alt="Avatar"
