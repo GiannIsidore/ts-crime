@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import LogoutButton from "@/components/logout_button";
 
 export const metadata: Metadata = {
   title: "CCDB - Crime Complaint Database",
@@ -216,7 +217,10 @@ export default function RootLayout({
                     <DropdownMenuItem>Settings</DropdownMenuItem>
                     <DropdownMenuItem>Support</DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>Logout</DropdownMenuItem>
+                    <DropdownMenuItem>
+                      {" "}
+                      <LogoutButton />
+                    </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>

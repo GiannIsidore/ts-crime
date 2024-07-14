@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+
 import { SubmitHandler, useForm } from "react-hook-form";
 import {
   Card,
@@ -54,7 +55,7 @@ const Form = () => {
     console.log(data);
 
     try {
-      const response = await fetch("/app/api/handle_complain", {
+      const response = await fetch("/api/handle_complain", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -251,13 +252,11 @@ const Form = () => {
               </div>
             </div>
           </CardContent>
-          <CardFooter className="flex flex-col items-end justify-end">
+          <CardFooter className="flex justify-end">
             <Button type="submit" disabled={isSubmitting}>
               Submit Complaint
             </Button>
-            {errors.root && (
-              <div className="text-red-500 ml-4">{errors.root.message}</div>
-            )}
+            {errors.root && <div></div>}
           </CardFooter>
         </form>
       </Card>
