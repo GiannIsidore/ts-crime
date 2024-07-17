@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const request = await fetch(
-      "http://localhost/3rdYear/ts-crime/app/php/login.php",
+      "http://localhost/git/ts-crime/app/php/login.php",
       {
         method: "POST",
         headers: {
@@ -40,12 +40,8 @@ export async function POST(req: NextRequest) {
         body: JSON.stringify({ email, password }),
       }
     );
-
     const response: ApiResponse = await request.json();
     const { data: userData, error } = response;
-
-    console.log(userData);
-    console.log(error);
 
     if (userData) {
       session.user_id = userData.employee_id;
@@ -56,11 +52,9 @@ export async function POST(req: NextRequest) {
       session.isLogged_in = userData ? true : false;
 
       await session.save();
-      console.log(true);
       // return NextResponse.redirect(new URL('/dashboard', request.url))
       return NextResponse.json({ message: "Login Successful" });
     } else if (error) {
-      console.log(false);
       return NextResponse.json({ error });
     }
   } catch (err) {}

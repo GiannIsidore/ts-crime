@@ -10,8 +10,16 @@ export async function middleware(req: NextRequest){
 
   if (pathname === '/' || pathname === '') {
     if (session.isLogged_in) {
-      const result = session.user_role == 1 ? NextResponse.redirect(new URL('/dashboard', req.url)) : null;
-      return result;
+
+      if(session.user_role == 1) {
+        return NextResponse.redirect(new URL('/admin_dashboard', req.url))
+      }
+      else if (session.user_role == 0) {
+        return NextResponse.redirect(new URL('/dashboard', req.url))
+      }
+      else{
+        return null;
+      }
     }
   }
 
@@ -19,9 +27,13 @@ export async function middleware(req: NextRequest){
     const result = !session.isLogged_in ? NextResponse.redirect(new URL('/', req.url)) : null;
     return result;
   }
-
+  
+  if (pathname === '/admin_dashboard') {
+    const result = session.user_role == 0 ? NextResponse.redirect(new URL ('/dashboard', req.url)) : null;
+    return result;
+  }
 }
 
 export const config = {
-  matcher: ['/', '/dashboard', '/admin']
+  matcher: ['/', '/dashboard', '/admin_dashboard']
 }
