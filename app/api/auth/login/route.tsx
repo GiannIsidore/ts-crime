@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const request = await fetch(
-      "http://localhost/git/ts-crime/app/php/login.php",
+      "http://localhost/3rdYear/ts-crime/app/php/login.php",
       {
         method: "POST",
         headers: {

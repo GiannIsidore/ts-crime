@@ -62,35 +62,8 @@ const LoginForm = () => {
 
   return (
     <>
-      {/* <div className="">
-      <div className="flex justify-center items-center mt-[14vh]">
-        <div className="w-[30vw] h-[65vh] border-black border rounded-[10px] p-[6vh] bg-stone-500/10">
-        
-          <br />
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <Label>Email</Label>
-              <Input type="text" {...register("email")} className="mt-[0.6vw]" />
-              {errors.email && (<div className="text-red-500 text-sm">{errors.email.message}</div>)}
-              <div className="p-[0.6vw]" />
-              <Label className="">Password</Label>
-              <Input type="password" {...register("password")} className="my-[1vh]" />
-              {errors.password && <div className="text-red-500 text-sm">{errors.password.message}</div>}
-              <br />
-              <Button className='w-full' type="submit">Login</Button>
-              { loginMessage && (<div className="text-red-500 text-base">{loginMessage}</div>)}
-            </form>
-          <br />
-          <div>
-            <p>Forgot Password? <Link className="underline cursor-pointer" href="/register">Click here!</Link></p>
-          </div>
-        </div>
-      </div>
-      {/* <div className='fixed top-1 right-1 mt-1 mr-1'>
-        <ModeToggle/>
-      </div> 
-    </div> */}
-      <div className="grid lg:grid-cols-2 w-full min-h-screen">
-        <div className="flex items-center justify-center bg-muted p-8 lg:p-12 order-2 lg:order-1">
+      <div className="w-full lg:grid lg:min-h-full lg:grid-cols-2 xl:min-h-full">
+        <div className="hidden lg:flex justify-center items-center">
           <img
             src="/cdbBlck.svg"
             alt="Login Illustration"
@@ -99,8 +72,8 @@ const LoginForm = () => {
             className="max-w-full h-auto"
           />
         </div>
-        <div className="flex items-center justify-center p-8 lg:p-12 order-1 lg:order-2">
-          <Card className="w-full max-w-md">
+        <div className="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+          <Card className="w-full max-w-sm">
             <CardHeader>
               {" "}
               <CardTitle className="text-2xl">Welcome back</CardTitle>
@@ -127,14 +100,14 @@ const LoginForm = () => {
                     {...register("password")}
                   />
                 </div>
-                <div>
+                {/* <div>
                   <p>
                     Forgot Password?{" "}
                     <Link className="underline cursor-pointer" href="#">
                       Click here!
                     </Link>
                   </p>
-                </div>
+                </div> */}
               </CardContent>
               <CardFooter className="flex flex-col gap-2 md:flex-row">
                 <Button className="w-full md:w-auto" type="submit">
@@ -144,9 +117,9 @@ const LoginForm = () => {
                 {loginMessage && (
                   <div className="text-red-500 text-base">{loginMessage}</div>
                 )}
-                <Button variant="outline" className="w-full md:w-auto">
+                {/* <Button variant="outline" className="w-full md:w-auto">
                   Sign up
-                </Button>
+                </Button> */}
               </CardFooter>
             </form>
           </Card>

@@ -1,0 +1,29 @@
+Raw data: {"data":{"first_name":"Francine Shaina","middle_name":"J.","last_name":"Pagaspas","suffix":"","email":"france@gmail.com","phone":"09955658532","address":"alub","is_resident":"0"}}
+Decoded data: Array
+(
+    [data] => Array
+        (
+            [first_name] => Francine Shaina
+            [middle_name] => J.
+            [last_name] => Pagaspas
+            [suffix] => 
+            [email] => france@gmail.com
+            [phone] => 09955658532
+            [address] => alub
+            [is_resident] => 0
+        )
+
+)
+
+is_resident value: 0
+Residency data: Array
+(
+    [:first_name] => Francine Shaina
+    [:middle_name] => J.
+    [:last_name] => Pagaspas
+    [:suffix] => 
+    [:email] => france@gmail.com
+    [:phone] => 09955658532
+    [:address] => alub
+)
+
