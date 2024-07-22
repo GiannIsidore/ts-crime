@@ -1,4 +1,5 @@
 "use client";
+import AlertAdd from "@/components/AlertAdd";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -418,7 +419,8 @@ const Form = () => {
               </div>
             </div>
           </CardContent>
-          <CardFooter className="flex justify-end">
+          <CardFooter className="flex justify-end gap-2">
+            <AlertAdd />
             <Button type="submit" disabled={isSubmitting}>
               Submit Complaint
             </Button>
