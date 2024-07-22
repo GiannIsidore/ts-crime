@@ -19,6 +19,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import LogoutButton from "@/components/logout_button";
+
 export const metadata: Metadata = {
   title: "CCDB - Admin Dashboard",
   description: "A database of crimes in Kauswagan, Cagayan de Oro City.",
@@ -85,7 +86,7 @@ export default function RootLayout({
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Link
-                        href="#"
+                        href="/admin_dashboard/employees"
                         className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                         prefetch={false}
                       >
@@ -131,14 +132,7 @@ export default function RootLayout({
           </aside>
           <div className="flex flex-col md:w-full sm:gap-4 sm:py-4 sm:pl-14">
             <header className="sticky top-0 z-30 flex h-14 justify-between items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
-              <div className="relative flex-1 md:grow-0">
-                <div className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  type="search"
-                  placeholder="Search..."
-                  className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
-                />
-              </div>
+              <div className="relative flex-1 md:grow-0"></div>
               <div className="flex items-center justify-center ">
                 {" "}
                 <DropdownMenu>

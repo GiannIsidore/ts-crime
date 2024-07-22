@@ -5,7 +5,7 @@ export async function middleware(req: NextRequest){
 
   const session = await getSession();
 
-  // console.log("session", session.isLogged_in);
+  console.log("session", session.isLogged_in);
   const { pathname } = req.nextUrl;
 
   if (pathname === '/' || pathname === '') {
@@ -35,5 +35,5 @@ export async function middleware(req: NextRequest){
 }
 
 export const config = {
-  matcher: ['/', '/dashboard', '/admin_dashboard', '/dashboard/:path*', '/admin_dashboard/:path:']
+  matcher: ['/', '/dashboard', '/admin_dashboard',]
 }

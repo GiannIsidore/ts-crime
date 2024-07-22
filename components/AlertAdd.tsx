@@ -91,7 +91,9 @@ const AlertAdd = () => {
 
   return (
     <AlertDialog>
-      <AlertDialogTrigger>+</AlertDialogTrigger>
+      <AlertDialogTrigger className="bg-black text-white font-semibold text-lg rounded-full px-3 p-1">
+        +
+      </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Add New Entry</AlertDialogTitle>
