@@ -1,15 +1,15 @@
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import {
   Select,
-  SelectTrigger,
-  SelectValue,
   SelectContent,
   SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 
 //!template for profiles page
 
@@ -83,7 +83,7 @@ export default function Profile() {
               <Label htmlFor="notification-settings">
                 Notification Settings
               </Label>
-              <Select id="notification-settings">
+              <Select>
                 <SelectTrigger>
                   <SelectValue placeholder="Select notification settings" />
                 </SelectTrigger>

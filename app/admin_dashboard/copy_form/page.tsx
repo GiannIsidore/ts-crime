@@ -1,27 +1,28 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { SubmitHandler, useForm, Controller } from "react-hook-form";
+import { Button } from "@/components/ui/button";
 import {
   Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
 } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
-  SelectTrigger,
-  SelectValue,
   SelectContent,
   SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import React, { useEffect, useState } from "react";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { z } from "zod";
+
 const formSchema = z.object({
   complainant: z.string(),
   respondent: z.string(),
@@ -30,7 +31,9 @@ const formSchema = z.object({
   address: z.string(),
   complaint_type: z.string(),
   complaint_details: z.string(),
+  resolution: z.string(),
 });
+
 interface Complainants {
   id: number;
   name: string;
@@ -39,9 +42,14 @@ interface Respondents {
   resident_id: number;
   resident_name: string;
 }
+interface ComplaintType {
+  complaint_type_id: number;
+  complaint_type_name: string;
+}
 type ComplainInput = z.infer<typeof formSchema>;
 
 const Form = () => {
+  const [complaintTypes, setComplaintTypes] = useState<ComplaintType[]>([]);
   const [complainants, setComplainants] = useState<Complainants[]>([]);
   const [filteredComplainants, setFilteredComplainants] = useState<
     Complainants[]
@@ -56,6 +64,7 @@ const Form = () => {
     useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setErrors] = useState<string | null>(null);
+  const [sayop, setSayop] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -77,6 +86,9 @@ const Form = () => {
           complainantsResponse.json(),
           respondentsResponse.json(),
         ]);
+
+        console.log("Complainants Data:", complainantsData);
+        console.log("Respondents Data:", respondentsData);
 
         setComplainants(
           complainantsData.records.map((record: any) => ({
@@ -119,6 +131,7 @@ const Form = () => {
     const filtered = complainants.filter((complainant) =>
       complainant.name.toLowerCase().includes(query)
     );
+    console.log("Filtered Complainants:", filtered);
     setFilteredComplainants(filtered);
     setShowComplainantSuggestions(query.length > 0);
   };
@@ -130,22 +143,25 @@ const Form = () => {
     const filtered = respondents.filter((respondent) =>
       respondent.resident_name.toLowerCase().includes(query)
     );
+    console.log("Filtered Respondents:", filtered);
     setFilteredRespondents(filtered);
     setShowRespondentSuggestions(query.length > 0);
   };
 
   const handleComplainantSuggestionClick = (name: string) => {
+    console.log("Complainant Suggestion Clicked:", name);
     setValue("complainant", name);
     setShowComplainantSuggestions(false);
   };
 
   const handleRespondentSuggestionClick = (name: string) => {
+    console.log("Respondent Suggestion Clicked:", name);
     setValue("respondent", name);
     setShowRespondentSuggestions(false);
   };
 
   const onSubmit: SubmitHandler<ComplainInput> = async (data) => {
-    console.log(data);
+    console.log("Form Data Submitted:", data);
 
     try {
       const response = await fetch("/api/handle_complain", {
@@ -164,7 +180,7 @@ const Form = () => {
       }
 
       const responseData = await response.json();
-      console.log(responseData);
+      console.log("API Response Data:", responseData);
 
       if (!responseData.success) {
         setError("root", {
@@ -179,6 +195,30 @@ const Form = () => {
       });
     }
   };
+  useEffect(() => {
+    const fetchComplaintTypes = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost/3rdYear/ts-crime/app/php/fetch_complaint_types.php"
+        );
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        if (!data.success) {
+          throw new Error("API response indicates failure");
+        }
+        setComplaintTypes(data.records);
+      } catch (error) {
+        console.error("Error fetching complaint types:", error);
+        setSayop("Error fetching complaint types");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchComplaintTypes();
+  }, []);
 
   return (
     <div>
@@ -203,6 +243,7 @@ const Form = () => {
                     control={control}
                     render={({ field }) => (
                       <Input
+                        {...register("complainant")}
                         id="complainant"
                         type="text"
                         placeholder="Search complainants..."
@@ -242,6 +283,7 @@ const Form = () => {
                     control={control}
                     render={({ field }) => (
                       <Input
+                        {...register("respondent")}
                         id="respondent"
                         type="text"
                         placeholder="Search respondents..."
@@ -304,22 +346,42 @@ const Form = () => {
               </div>
 
               <div className="grid gap-2">
-                <Label htmlFor="complaint_type">Type of Complaint</Label>
-                <Select
-                  onValueChange={(value) => setValue("complaint_type", value)}
-                >
-                  <SelectTrigger id="complaint_type">
-                    <SelectValue placeholder="Select complaint type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="noise">Noise</SelectItem>
-                    <SelectItem value="garbage">Garbage</SelectItem>
-                    <SelectItem value="infrastructure">
-                      Infrastructure
-                    </SelectItem>
-                    <SelectItem value="other">Other</SelectItem>
-                  </SelectContent>
-                </Select>
+                <label htmlFor="complaint_type">Type of Complaint</label>
+                <Controller
+                  name="complaint_type"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      onValueChange={(value) =>
+                        setValue("complaint_type", value)
+                      }
+                      value={field.value}
+                      id="complaint_type"
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select complaint type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {loading ? (
+                          <p>Loading...</p>
+                        ) : error ? (
+                          <p>{error}</p>
+                        ) : complaintTypes.length > 0 ? (
+                          complaintTypes.map((type) => (
+                            <SelectItem
+                              key={type.complaint_type_id}
+                              value={type.complaint_type_id.toString()}
+                            >
+                              {type.complaint_type_name}
+                            </SelectItem>
+                          ))
+                        ) : (
+                          <p>No complaint types available</p>
+                        )}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
                 {errors.complaint_type && (
                   <span className="text-red-500">
                     {errors.complaint_type.message}
@@ -337,6 +399,20 @@ const Form = () => {
                 {errors.complaint_details && (
                   <span className="text-red-500">
                     {errors.complaint_details.message}
+                  </span>
+                )}
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="complaint">Resolution</Label>
+                <Textarea
+                  {...register("resolution")}
+                  id="complaint"
+                  placeholder="Describe the needed resolution"
+                  className="min-h-[150px]"
+                />
+                {errors.resolution && (
+                  <span className="text-red-500">
+                    {errors.resolution.message}
                   </span>
                 )}
               </div>
