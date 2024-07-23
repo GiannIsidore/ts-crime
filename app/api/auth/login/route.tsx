@@ -28,10 +28,11 @@ interface ApiResponse {
 export async function POST(req: NextRequest) {
   const session = await getSession();
   const { email, password }: loginData = await req.json();
+  console.log(true)
 
   try {
     const request = await fetch(
-      "http://localhost/3rdYear/ts-crime/app/php/login.php",
+      `${process.env.BE_URL}/ts-crime/app/php/login.php`,
       {
         method: "POST",
         headers: {

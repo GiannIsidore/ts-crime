@@ -5,16 +5,7 @@ import { z } from "zod";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Button } from "./ui/button";
-const formSchema = z.object({
-  complainant: z.string(),
-  respondent: z.string(),
-  respondent_address: z.string(),
-  date_occurrence: z.string().date(),
-  address: z.string(),
-  complaint_type: z.string(),
-  complaint_details: z.string(),
-  resolution: z.string(),
-});
+import { searchSchema } from '@/utils/zod';
 interface Complainants {
   id: number;
   name: string;
@@ -27,7 +18,7 @@ interface ComplaintType {
   complaint_type_id: number;
   complaint_type_name: string;
 }
-type ComplainInput = z.infer<typeof formSchema>;
+type ComplainInput = z.infer<typeof searchSchema>;
 const Search = () => {
   const [complainants, setComplainants] = useState<Complainants[]>([]);
   const [filteredComplainants, setFilteredComplainants] = useState<
@@ -50,10 +41,10 @@ const Search = () => {
       try {
         const [complainantsResponse, respondentsResponse] = await Promise.all([
           fetch(
-            "http://localhost/3rdYear/ts-crime/app/php/fetch_complainants.php"
+            `${process.env.BE_URL}/ts-crime/app/php/fetch_complainants.php`
           ),
           fetch(
-            "http://localhost/3rdYear/ts-crime/app/php/fetch_respondents.php"
+            `${process.env.BE_URL}/ts-crime/app/php/fetch_respondents.php`
           ),
         ]);
 
@@ -100,7 +91,7 @@ const Search = () => {
     formState: { errors, isSubmitting },
     setError,
   } = useForm<ComplainInput>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(searchSchema),
   });
 
   const handleComplainantSearch = (

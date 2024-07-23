@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
     }
 
     const response = await fetch(
-      "http://localhost/3rdYear/ts-crime/app/php/handle_residency.php",
+      `${process.env.BE_URL}/ts-crime/app/php/handle_residency.php`,
       {
         method: "POST",
         headers: {

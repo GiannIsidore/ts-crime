@@ -70,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
        $conn->beginTransaction();
 //!add function to check if complainant already exists
         //? Insert into complainants_tbl
-        $complainantsQuery = "INSERT INTO complainants_tbl (fname, mname, lname, email, number, address, age) 
+        $complainantsQuery = "INSERT INTO case_tbl (fname, mname, lname, email, number, address, age) 
                               VALUES (:fname, :mname, :lname, :email, :number, :address, :age)";
         $complainantsStmt =$conn->prepare($complainantsQuery);
         foreach ($complainantData as $key => $value) {

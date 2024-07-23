@@ -23,20 +23,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { formSchema } from "@/utils/zod";
 
-const formSchema = z.object({
-  fname: z.string(),
-  mname: z.string(),
-  lname: z.string(),
-  email: z.string().email(),
-  number: z.string(),
-  respondent: z.string(),
-  respondent_address: z.string(),
-  date_occurrence: z.string().date(),
-  address: z.string(),
-  complaint_type: z.string(),
-  complaint_details: z.string(),
-});
+
 
 type ComplainInput = z.infer<typeof formSchema>;
 

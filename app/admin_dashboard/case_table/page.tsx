@@ -54,7 +54,7 @@ export default function CaseTable() {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "http://localhost/3rdYear/ts-crime/app/php/case_fetch.php"
+          `${process.env.BE_URL}/ts-crime/app/php/case_fetch.php`
         );
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -68,14 +68,13 @@ export default function CaseTable() {
         setLoading(false);
       }
     };
-
     fetchData();
   }, []);
 
   const updateStatus = async (case_id: number, newStatus: number) => {
     try {
       const response = await fetch(
-        "http://localhost/3rdYear/ts-crime/app/php/update_case_status.php",
+        `${process.env.BE_URL}/ts-crime/app/php/update_case_status.php`,
         {
           method: "POST",
           headers: {
