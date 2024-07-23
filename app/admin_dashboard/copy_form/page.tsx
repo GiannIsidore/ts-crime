@@ -1,5 +1,6 @@
 "use client";
-import AlertAdd from "@/components/AlertAdd";
+
+import Search from "@/components/Search";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -23,6 +24,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
+import AlertAdd from "@/components/AlertAdd";
 
 const formSchema = z.object({
   complainant: z.string(),
@@ -67,52 +69,52 @@ const Form = () => {
   const [error, setErrors] = useState<string | null>(null);
   const [sayop, setSayop] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [complainantsResponse, respondentsResponse] = await Promise.all([
-          fetch(
-            "http://localhost/3rdYear/ts-crime/app/php/fetch_complainants.php"
-          ),
-          fetch(
-            "http://localhost/3rdYear/ts-crime/app/php/fetch_respondents.php"
-          ),
-        ]);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const [complainantsResponse, respondentsResponse] = await Promise.all([
+  //         fetch(
+  //           "http://localhost/3rdYear/ts-crime/app/php/fetch_complainants.php"
+  //         ),
+  //         fetch(
+  //           "http://localhost/3rdYear/ts-crime/app/php/fetch_respondents.php"
+  //         ),
+  //       ]);
 
-        if (!complainantsResponse.ok || !respondentsResponse.ok) {
-          throw new Error("Network response was not ok");
-        }
+  //       if (!complainantsResponse.ok || !respondentsResponse.ok) {
+  //         throw new Error("Network response was not ok");
+  //       }
 
-        const [complainantsData, respondentsData] = await Promise.all([
-          complainantsResponse.json(),
-          respondentsResponse.json(),
-        ]);
+  //       const [complainantsData, respondentsData] = await Promise.all([
+  //         complainantsResponse.json(),
+  //         respondentsResponse.json(),
+  //       ]);
 
-        console.log("Complainants Data:", complainantsData);
-        console.log("Respondents Data:", respondentsData);
+  //       console.log("Complainants Data:", complainantsData);
+  //       console.log("Respondents Data:", respondentsData);
 
-        setComplainants(
-          complainantsData.records.map((record: any) => ({
-            id: record.resident_id || record.outsider_id,
-            name: record.resident_name || record.outsider_name,
-          }))
-        );
-        setRespondents(
-          respondentsData.records.map((record: any) => ({
-            resident_id: record.resident_id,
-            resident_name: record.resident_name,
-          }))
-        );
-      } catch (error) {
-        setErrors("Error fetching data");
-        console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  //       setComplainants(
+  //         complainantsData.records.map((record: any) => ({
+  //           id: record.resident_id || record.outsider_id,
+  //           name: record.resident_name || record.outsider_name,
+  //         }))
+  //       );
+  //       setRespondents(
+  //         respondentsData.records.map((record: any) => ({
+  //           resident_id: record.resident_id,
+  //           resident_name: record.resident_name,
+  //         }))
+  //       );
+  //     } catch (error) {
+  //       setErrors("Error fetching data");
+  //       console.error("Error fetching data:", error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
 
-    fetchData();
-  }, []);
+  //   fetchData();
+  // }, []);
 
   const {
     register,
@@ -125,41 +127,41 @@ const Form = () => {
     resolver: zodResolver(formSchema),
   });
 
-  const handleComplainantSearch = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const query = event.target.value.toLowerCase();
-    const filtered = complainants.filter((complainant) =>
-      complainant.name.toLowerCase().includes(query)
-    );
-    console.log("Filtered Complainants:", filtered);
-    setFilteredComplainants(filtered);
-    setShowComplainantSuggestions(query.length > 0);
-  };
+  // const handleComplainantSearch = (
+  //   event: React.ChangeEvent<HTMLInputElement>
+  // ) => {
+  //   const query = event.target.value.toLowerCase();
+  //   const filtered = complainants.filter((complainant) =>
+  //     complainant.name.toLowerCase().includes(query)
+  //   );
+  //   console.log("Filtered Complainants:", filtered);
+  //   setFilteredComplainants(filtered);
+  //   setShowComplainantSuggestions(query.length > 0);
+  // };
 
-  const handleRespondentSearch = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const query = event.target.value.toLowerCase();
-    const filtered = respondents.filter((respondent) =>
-      respondent.resident_name.toLowerCase().includes(query)
-    );
-    console.log("Filtered Respondents:", filtered);
-    setFilteredRespondents(filtered);
-    setShowRespondentSuggestions(query.length > 0);
-  };
+  // const handleRespondentSearch = (
+  //   event: React.ChangeEvent<HTMLInputElement>
+  // ) => {
+  //   const query = event.target.value.toLowerCase();
+  //   const filtered = respondents.filter((respondent) =>
+  //     respondent.resident_name.toLowerCase().includes(query)
+  //   );
+  //   console.log("Filtered Respondents:", filtered);
+  //   setFilteredRespondents(filtered);
+  //   setShowRespondentSuggestions(query.length > 0);
+  // };
 
-  const handleComplainantSuggestionClick = (name: string) => {
-    console.log("Complainant Suggestion Clicked:", name);
-    setValue("complainant", name);
-    setShowComplainantSuggestions(false);
-  };
+  // const handleComplainantSuggestionClick = (name: string) => {
+  //   console.log("Complainant Suggestion Clicked:", name);
+  //   setValue("complainant", name);
+  //   setShowComplainantSuggestions(false);
+  // };
 
-  const handleRespondentSuggestionClick = (name: string) => {
-    console.log("Respondent Suggestion Clicked:", name);
-    setValue("respondent", name);
-    setShowRespondentSuggestions(false);
-  };
+  // const handleRespondentSuggestionClick = (name: string) => {
+  //   console.log("Respondent Suggestion Clicked:", name);
+  //   setValue("respondent", name);
+  //   setShowRespondentSuggestions(false);
+  // };
 
   const onSubmit: SubmitHandler<ComplainInput> = async (data) => {
     console.log("Form Data Submitted:", data);
@@ -236,7 +238,7 @@ const Form = () => {
           </CardHeader>
           <CardContent>
             <div className="grid gap-6">
-              <div className="grid grid-cols-2 gap-4">
+              {/* <div className="grid grid-cols-2 gap-4">
                 <div className="relative grid gap-2">
                   <Label htmlFor="complainant">COMPLAINANT</Label>
                   <Controller
@@ -319,7 +321,9 @@ const Form = () => {
                     </div>
                   )}
                 </div>
-              </div>
+              </div> */}
+
+              <Search />
               <div className="grid grid-cols-2 gap-4">
                 <div className="grid gap-2">
                   <Label htmlFor="when-happened">When did it happen?</Label>
