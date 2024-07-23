@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
 
     //! Send data to backend
     const response = await fetch(
-      "http://localhost/3rdYear/ts-crime/app/php/comp.php",
+      `${process.env.BE_URL}/ts-crime/app/php/comp.php`,
       {
         method: "POST",
         headers: {

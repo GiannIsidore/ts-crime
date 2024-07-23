@@ -7,7 +7,7 @@ export default async function handler(
 ) {
   try {
     const response = await fetch(
-      "http://localhost/3rdYear/ts-crime/app/php/case_fetch.php",
+      `${process.env.BE_URL}/ts-crime/app/php/case_fetch.php`,
       {
         method: "GET",
         headers: {

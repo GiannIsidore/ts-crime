@@ -1,6 +1,5 @@
 "use client";
 
-import Search from "@/components/Search";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -23,20 +22,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { complaintSchema } from '@/utils/zod'
 import { z } from "zod";
 import AlertAdd from "@/components/AlertAdd";
-
-const formSchema = z.object({
-  complainant: z.string(),
-  respondent: z.string(),
-  respondent_address: z.string(),
-  date_occurrence: z.string().date(),
-  address: z.string(),
-  complaint_type: z.string(),
-  complaint_details: z.string(),
-  resolution: z.string(),
-});
-
+import Search from "@/components/Search";
 interface Complainants {
   id: number;
   name: string;
@@ -49,7 +38,7 @@ interface ComplaintType {
   complaint_type_id: number;
   complaint_type_name: string;
 }
-type ComplainInput = z.infer<typeof formSchema>;
+type ComplainInput = z.infer<typeof complaintSchema>;
 
 const Form = () => {
   const [complaintTypes, setComplaintTypes] = useState<ComplaintType[]>([]);
@@ -124,7 +113,7 @@ const Form = () => {
     formState: { errors, isSubmitting },
     setError,
   } = useForm<ComplainInput>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(complaintSchema),
   });
 
   // const handleComplainantSearch = (
@@ -323,7 +312,7 @@ const Form = () => {
                 </div>
               </div> */}
 
-              <Search />
+              <Search/>
               <div className="grid grid-cols-2 gap-4">
                 <div className="grid gap-2">
                   <Label htmlFor="when-happened">When did it happen?</Label>
@@ -361,7 +350,7 @@ const Form = () => {
                         setValue("complaint_type", value)
                       }
                       value={field.value}
-                      id="complaint_type"
+                      name="complaint_type"
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Select complaint type" />
