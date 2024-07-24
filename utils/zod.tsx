@@ -1,11 +1,11 @@
-import { object, string } from 'zod';
+import { object, string } from "zod";
 
 export const complaintSchema = object({
   complainant: string(),
   respondent: string(),
   respondent_address: string(),
   date_occurrence: string().date(),
-  address: string(),
+  place_occurrence: string(),
   complaint_type: string(),
   complaint_details: string(),
   resolution: string(),

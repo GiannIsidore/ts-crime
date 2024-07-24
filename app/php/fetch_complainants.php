@@ -1,14 +1,14 @@
 <?php
 include '../php/connection/connection.php';
 
-// Set headers
+
 header("Content-Type: application/json");
 header("Access-Control-Allow-Origin: http://localhost:3000");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
 try {
-    // SQL query to fetch data from residents and outsiders tables
+
     $query = "
         SELECT 
             r.id AS resident_id,
@@ -27,11 +27,11 @@ try {
             outsiders o ON r.id = o.id;  // Adjust JOIN condition if necessary
     ";
 
-    // Execute the query
+
     $stmt = $conn->query($query);
     $records = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Format the records
+
     $formattedRecords = [];
     foreach ($records as $record) {
         $formattedRecord = [

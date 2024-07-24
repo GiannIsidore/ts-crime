@@ -2,17 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { useState } from "react"; // Import useState if managing state in a React component
 
 interface ComplainDetails {
-  fname: string;
-  mname: string;
-  lname: string;
+  complainant: string;
   email: string;
   number: string;
   respondent: string;
   respondent_address: string;
   date_occurrence: string;
-  address: string;
+  place_occurrence: string;
   complaint_type: string;
   complaint_details: string;
+  resolution: string;
 }
 
 export async function POST(req: NextRequest) {

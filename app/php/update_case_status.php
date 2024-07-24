@@ -29,7 +29,7 @@ if ($case_id === null || $status === null) {
 
 try {
 
-    $sql = "UPDATE cases_tbl SET status = :status WHERE case_id = :case_id";
+    $sql = "UPDATE cases SET status = :status WHERE case_id = :case_id";
     $stmt = $conn->prepare($sql);
     $stmt->execute(['status' => $status, 'case_id' => $case_id]);
 

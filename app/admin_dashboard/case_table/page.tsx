@@ -42,6 +42,7 @@ interface Case {
   date_time_occurrence: string;
   complaint_type: string;
   complaint_details: string;
+  resolution: string;
   status: number;
 }
 
@@ -54,11 +55,12 @@ export default function CaseTable() {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `${process.env.BE_URL}/ts-crime/app/php/case_fetch.php`
+          `http://localhost/3rdYear/ts-crime/app/php/case_fetch.php`
         );
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
+        console.log(response.text);
         const data = await response.json();
         setCases(data.cases);
       } catch (error) {
@@ -74,7 +76,7 @@ export default function CaseTable() {
   const updateStatus = async (case_id: number, newStatus: number) => {
     try {
       const response = await fetch(
-        `${process.env.BE_URL}/ts-crime/app/php/update_case_status.php`,
+        `http://localhost/3rdYear/ts-crime/app/php/update_case_status.php`,
         {
           method: "POST",
           headers: {
@@ -204,8 +206,25 @@ export default function CaseTable() {
                           {caseItem.date_time_occurrence}
                         </div>
                       </DrawerHeader>
-                      <div className="px-4 py-6 prose prose-sm prose-gray dark:prose-invert">
-                        <p>{caseItem.complaint_details}</p>
+                      <div className="flex flex-1  gap-4 justify-evenly w-full">
+                        <Card className="w-full max-w-2xl p-2 rounded-lg overflow-hidden shadow-lg">
+                          <CardTitle>Complaint</CardTitle>
+
+                          <CardContent className="p-6 h-60  overflow-auto">
+                            <div className="text-muted-foreground">
+                              <p>{caseItem.complaint_details}</p>
+                            </div>
+                          </CardContent>
+                        </Card>
+                        <Card className="w-full max-w-2xl p-2 h-[50vh] rounded-lg overflow-hidden shadow-lg">
+                          <CardTitle>Resolution</CardTitle>
+
+                          <CardContent className="p-6 h-60 overflow-auto">
+                            <div className="text-muted-foreground">
+                              <p>{caseItem.resolution}</p>
+                            </div>
+                          </CardContent>
+                        </Card>
                       </div>
                       <DrawerFooter>
                         <DrawerClose asChild>

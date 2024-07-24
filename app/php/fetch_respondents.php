@@ -8,7 +8,7 @@ header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
 try {
-    // SQL query to fetch data from residents table only
+
     $query = "
         SELECT 
             id AS resident_id,
@@ -20,11 +20,10 @@ try {
             residents
     ";
 
-    // Execute the query
     $stmt = $conn->query($query);
     $records = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Format the records
+
     $formattedRecords = [];
     foreach ($records as $record) {
         $formattedRecord = [
@@ -35,18 +34,15 @@ try {
         $formattedRecords[] = $formattedRecord;
     }
 
-    // Prepare the response
     $response = [
         'success' => true,
         'message' => 'Records fetched successfully',
         'records' => $formattedRecords
     ];
 
-    // Output JSON response
     echo json_encode($response);
 
 } catch (PDOException $e) {
-    // Handle any errors
     $response = [
         'success' => false,
         'message' => 'Error fetching data',

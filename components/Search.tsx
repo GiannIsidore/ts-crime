@@ -5,7 +5,7 @@ import { z } from "zod";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Button } from "./ui/button";
-import { searchSchema } from '@/utils/zod';
+import { searchSchema } from "@/utils/zod";
 interface Complainants {
   id: number;
   name: string;
@@ -43,9 +43,7 @@ const Search = () => {
           fetch(
             `${process.env.BE_URL}/ts-crime/app/php/fetch_complainants.php`
           ),
-          fetch(
-            `${process.env.BE_URL}/ts-crime/app/php/fetch_respondents.php`
-          ),
+          fetch(`${process.env.BE_URL}/ts-crime/app/php/fetch_respondents.php`),
         ]);
 
         if (!complainantsResponse.ok || !respondentsResponse.ok) {

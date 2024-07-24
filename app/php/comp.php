@@ -3,6 +3,7 @@
 include '../php/connection/connection.php';
 
 function handlePDOError(PDOException $e) {
+    file_put_contents('php_debug.log', "PDO Error: " . $e->getMessage() . "\n", FILE_APPEND);
     header("Content-Type: application/json");
     echo json_encode(array('success' => false, 'message' => 'PDO Error: ' . $e->getMessage()));
     exit();
@@ -13,46 +14,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $content = trim(file_get_contents("php://input"));
     $requestData = json_decode($content, true);
-  
 
-    if (json_last_error() !== JSON_ERROR_NONE) {
+    //! Log raw and decoded data
+    file_put_contents('php_debug.log', "Raw data: " . $content . "\n", FILE_APPEND);
+    file_put_contents('php_debug.log', "Decoded data: " . print_r($requestData, true) . "\n", FILE_APPEND);
+
+    //! JSON errors and data validity
+    if (json_last_error() !== JSON_ERROR_NONE || !$requestData) {
         http_response_code(400); 
         echo json_encode(array('success' => false, 'message' => 'Invalid JSON data'));
         exit();
     }
-    if (!$requestData) {
-        http_response_code(400); 
-        echo json_encode(array('success' => false, 'message' => 'Invalid JSON data'));
-        exit();
-    }
 
-    //! Check if 'data' key is present para sa nested
     if (!isset($requestData['data'])) {
-        http_response_code(400); // Bad Request
+        http_response_code(400); 
         echo json_encode(array('success' => false, 'message' => 'Missing data object'));
         exit();
     }
 
     $data = $requestData['data'];
 
-    //! Check required fields 
-    $requiredFields = ['fname', 'mname', 'lname', 'email', 'number', 'address', 'respondent', 'complaint_type', 'complaint_details'];
-    foreach ($requiredFields as $field) {
-        if (!isset($data[$field]) || empty(trim($data[$field]))) {
-            http_response_code(400); 
-            echo json_encode(array('success' => false, 'message' => 'Missing or empty required field: ' . $field));
-            exit();
-        }
-    }
-
+    //! Array insertion
     $complainantData = array(
-        ':fname' => $data['fname'],
-        ':mname' => $data['mname'],
-        ':lname' => $data['lname'],
-        ':email' => $data['email'],
-        ':number' => $data['number'],
-        ':address' => $data['address'],
-        ':age' => isset($data['age']) ? $data['age'] : null
+       ':complainant_name' => $data['complainant'],
     );
 
     $respondentData = array(
@@ -60,48 +44,46 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     );
 
     $caseData = array(
-        ':place_of_occurrence' => $data['address'],
+        ':place_of_occurrence' => $data['place_occurrence'], 
         ':date_time_occurrence' => date('Y-m-d H:i:s'), 
         ':complaint_type' => $data['complaint_type'],
-        ':complaint_details' => $data['complaint_details']
+        ':complaint_details' => $data['complaint_details'],
+        ':resolution' => $data['resolution']
     );
 
     try {
-       $conn->beginTransaction();
-//!add function to check if complainant already exists
-        //? Insert into complainants_tbl
-        $complainantsQuery = "INSERT INTO case_tbl (fname, mname, lname, email, number, address, age) 
-                              VALUES (:fname, :mname, :lname, :email, :number, :address, :age)";
-        $complainantsStmt =$conn->prepare($complainantsQuery);
-        foreach ($complainantData as $key => $value) {
-            $complainantsStmt->bindValue($key, $value, is_null($value) ? PDO::PARAM_NULL : PDO::PARAM_STR);
-        }
-        $complainantsStmt->execute();
-        $complainantId =$conn->lastInsertId();
-//!add function to check if respondent already exists
-        //? Insert into respondents_tbl
-        $respondentsQuery = "INSERT INTO respondents_tbl (respondent_name) 
-                             VALUES (:respondent_name)";
-        $respondentsStmt =$conn->prepare($respondentsQuery);
-        foreach ($respondentData as $key => $value) {
-            $respondentsStmt->bindValue($key, $value, PDO::PARAM_STR);
-        }
-        $respondentsStmt->execute();
-        $respondentId =$conn->lastInsertId();
+        $conn->beginTransaction();
 
-        //? Insert into cases_tbl
+        // Insert into complainant
+        $complainantsQuery = "INSERT INTO complainant (complainant_name) VALUES (:complainant_name)";
+        $complainantsStmt = $conn->prepare($complainantsQuery);
+        $complainantsStmt->bindValue(':complainant_name', $complainantData[':complainant_name'], PDO::PARAM_STR);
+        $complainantsStmt->execute();
+        $complainantId = $conn->lastInsertId();
+        file_put_contents('php_debug.log', "Inserted complainant ID: " . $complainantId . "\n", FILE_APPEND);
+
+        // Insert into respondent
+        $respondentsQuery = "INSERT INTO respondent (respondent_name) VALUES (:respondent_name)";
+        $respondentsStmt = $conn->prepare($respondentsQuery);
+        $respondentsStmt->bindValue(':respondent_name', $respondentData[':respondent_name'], PDO::PARAM_STR);
+        $respondentsStmt->execute();
+        $respondentId = $conn->lastInsertId();
+        file_put_contents('php_debug.log', "Inserted respondent ID: " . $respondentId . "\n", FILE_APPEND);
+
+        // Insert into cases
         $caseData[':complainant_id'] = $complainantId;
         $caseData[':respondent_id'] = $respondentId;
-        $casesQuery = "INSERT INTO cases_tbl (complainant_id, respondent_id, place_of_occurrence, date_time_occurrence, complaint_type, complaint_details) 
-                       VALUES (:complainant_id, :respondent_id, :place_of_occurrence, :date_time_occurrence, :complaint_type, :complaint_details)";
-        $casesStmt =$conn->prepare($casesQuery);
+        $casesQuery = "INSERT INTO cases (complainant_id, respondent_id, place_of_occurrence, date_time_occurrence, complaint_type, complaint_details, resolution) 
+                       VALUES (:complainant_id, :respondent_id, :place_of_occurrence, :date_time_occurrence, :complaint_type, :complaint_details, :resolution)";
+        $casesStmt = $conn->prepare($casesQuery);
         foreach ($caseData as $key => $value) {
             $casesStmt->bindValue($key, $value, PDO::PARAM_STR);
         }
         $casesStmt->execute();
-        $caseId =$conn->lastInsertId();
+        $caseId = $conn->lastInsertId();
+        file_put_contents('php_debug.log', "Inserted case ID: " . $caseId . "\n", FILE_APPEND);
 
-       $conn->commit();
+        $conn->commit();
 
         $response = array(
             'success' => true,
@@ -112,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         echo json_encode($response);
 
     } catch (PDOException $e) {
-       $conn->rollBack();
+        $conn->rollBack();
         handlePDOError($e);
     }
 

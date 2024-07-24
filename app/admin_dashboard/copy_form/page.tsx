@@ -22,10 +22,19 @@ import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { complaintSchema } from '@/utils/zod'
+
 import { z } from "zod";
 import AlertAdd from "@/components/AlertAdd";
-import Search from "@/components/Search";
+
+const complaintSchema = z.object({
+  complainant: z.string().min(1, "Complainant is required"),
+  respondent: z.string().min(1, "Respondent is required"),
+  date_occurrence: z.string().optional(),
+  place_occurrence: z.string().optional(),
+  complaint_type: z.string().nonempty("Complaint type is required"),
+  complaint_details: z.string().min(1, "Complaint details are required"),
+  resolution: z.string().min(1, "Resolution is required"),
+});
 interface Complainants {
   id: number;
   name: string;
@@ -57,53 +66,57 @@ const Form = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setErrors] = useState<string | null>(null);
   const [sayop, setSayop] = useState<string | null>(null);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [complainantsResponse, respondentsResponse] = await Promise.all([
+          fetch(
+            "http://localhost/3rdYear/ts-crime/app/php/fetch_complainants.php"
+          ),
+          fetch(
+            "http://localhost/3rdYear/ts-crime/app/php/fetch_respondents.php"
+          ),
+        ]);
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const [complainantsResponse, respondentsResponse] = await Promise.all([
-  //         fetch(
-  //           "http://localhost/3rdYear/ts-crime/app/php/fetch_complainants.php"
-  //         ),
-  //         fetch(
-  //           "http://localhost/3rdYear/ts-crime/app/php/fetch_respondents.php"
-  //         ),
-  //       ]);
+        if (!complainantsResponse.ok || !respondentsResponse.ok) {
+          throw new Error("Network response was not ok");
+        }
 
-  //       if (!complainantsResponse.ok || !respondentsResponse.ok) {
-  //         throw new Error("Network response was not ok");
-  //       }
+        const [complainantsData, respondentsData] = await Promise.all([
+          complainantsResponse.json(),
+          respondentsResponse.json(),
+        ]);
 
-  //       const [complainantsData, respondentsData] = await Promise.all([
-  //         complainantsResponse.json(),
-  //         respondentsResponse.json(),
-  //       ]);
+        console.log("Complainants Data:", complainantsData);
+        console.log("Respondents Data:", respondentsData);
 
-  //       console.log("Complainants Data:", complainantsData);
-  //       console.log("Respondents Data:", respondentsData);
+        // Map both residents and outsiders
+        const allComplainants = complainantsData.records
+          .flatMap((record: any) => [
+            { id: record.resident_id, name: record.resident_name },
+            { id: record.outsider_id, name: record.outsider_name },
+          ])
+          .filter((complainant: any) => complainant.name);
 
-  //       setComplainants(
-  //         complainantsData.records.map((record: any) => ({
-  //           id: record.resident_id || record.outsider_id,
-  //           name: record.resident_name || record.outsider_name,
-  //         }))
-  //       );
-  //       setRespondents(
-  //         respondentsData.records.map((record: any) => ({
-  //           resident_id: record.resident_id,
-  //           resident_name: record.resident_name,
-  //         }))
-  //       );
-  //     } catch (error) {
-  //       setErrors("Error fetching data");
-  //       console.error("Error fetching data:", error);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
+        console.log("All Complainants:", allComplainants);
 
-  //   fetchData();
-  // }, []);
+        setComplainants(allComplainants);
+        setRespondents(
+          respondentsData.records.map((record: any) => ({
+            resident_id: record.resident_id,
+            resident_name: record.resident_name,
+          }))
+        );
+      } catch (error) {
+        setErrors("Error fetching data");
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const {
     register,
@@ -115,42 +128,41 @@ const Form = () => {
   } = useForm<ComplainInput>({
     resolver: zodResolver(complaintSchema),
   });
+  const handleComplainantSearch = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const query = event.target.value.toLowerCase();
+    const filtered = complainants.filter((complainant) =>
+      complainant.name.toLowerCase().includes(query)
+    );
+    console.log("Filtered Complainants:", filtered);
+    setFilteredComplainants(filtered);
+    setShowComplainantSuggestions(query.length > 0);
+  };
 
-  // const handleComplainantSearch = (
-  //   event: React.ChangeEvent<HTMLInputElement>
-  // ) => {
-  //   const query = event.target.value.toLowerCase();
-  //   const filtered = complainants.filter((complainant) =>
-  //     complainant.name.toLowerCase().includes(query)
-  //   );
-  //   console.log("Filtered Complainants:", filtered);
-  //   setFilteredComplainants(filtered);
-  //   setShowComplainantSuggestions(query.length > 0);
-  // };
+  const handleRespondentSearch = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const query = event.target.value.toLowerCase();
+    const filtered = respondents.filter((respondent) =>
+      respondent.resident_name.toLowerCase().includes(query)
+    );
+    console.log("Filtered Respondents:", filtered);
+    setFilteredRespondents(filtered);
+    setShowRespondentSuggestions(query.length > 0);
+  };
 
-  // const handleRespondentSearch = (
-  //   event: React.ChangeEvent<HTMLInputElement>
-  // ) => {
-  //   const query = event.target.value.toLowerCase();
-  //   const filtered = respondents.filter((respondent) =>
-  //     respondent.resident_name.toLowerCase().includes(query)
-  //   );
-  //   console.log("Filtered Respondents:", filtered);
-  //   setFilteredRespondents(filtered);
-  //   setShowRespondentSuggestions(query.length > 0);
-  // };
+  const handleComplainantSuggestionClick = (name: string) => {
+    console.log("Complainant Suggestion Clicked:", name);
+    setValue("complainant", name);
+    setShowComplainantSuggestions(false);
+  };
 
-  // const handleComplainantSuggestionClick = (name: string) => {
-  //   console.log("Complainant Suggestion Clicked:", name);
-  //   setValue("complainant", name);
-  //   setShowComplainantSuggestions(false);
-  // };
-
-  // const handleRespondentSuggestionClick = (name: string) => {
-  //   console.log("Respondent Suggestion Clicked:", name);
-  //   setValue("respondent", name);
-  //   setShowRespondentSuggestions(false);
-  // };
+  const handleRespondentSuggestionClick = (name: string) => {
+    console.log("Respondent Suggestion Clicked:", name);
+    setValue("respondent", name);
+    setShowRespondentSuggestions(false);
+  };
 
   const onSubmit: SubmitHandler<ComplainInput> = async (data) => {
     console.log("Form Data Submitted:", data);
@@ -178,8 +190,10 @@ const Form = () => {
         setError("root", {
           message: responseData.message,
         });
+        alert(responseData.message);
         return;
       }
+      alert("Complaint filed successfully");
     } catch (error: any) {
       console.error("Error sending data to PHP backend:", error);
       setError("root", {
@@ -187,6 +201,7 @@ const Form = () => {
       });
     }
   };
+
   useEffect(() => {
     const fetchComplaintTypes = async () => {
       try {
@@ -215,7 +230,7 @@ const Form = () => {
   return (
     <div>
       <Card className="w-full max-w-2xl mx-auto p-3 sm:p-4 md:p-5">
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)} noValidate>
           <CardHeader>
             <CardTitle className="text-3xl font-bold">
               File a Complaint
@@ -227,7 +242,7 @@ const Form = () => {
           </CardHeader>
           <CardContent>
             <div className="grid gap-6">
-              {/* <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-4">
                 <div className="relative grid gap-2">
                   <Label htmlFor="complainant">COMPLAINANT</Label>
                   <Controller
@@ -253,7 +268,7 @@ const Form = () => {
                       {filteredComplainants.length > 0 ? (
                         filteredComplainants.map((record) => (
                           <p
-                            key={record.id}
+                            key={record.name}
                             onClick={() =>
                               handleComplainantSuggestionClick(record.name)
                             }
@@ -310,9 +325,8 @@ const Form = () => {
                     </div>
                   )}
                 </div>
-              </div> */}
+              </div>
 
-              <Search/>
               <div className="grid grid-cols-2 gap-4">
                 <div className="grid gap-2">
                   <Label htmlFor="when-happened">When did it happen?</Label>
@@ -328,12 +342,10 @@ const Form = () => {
                   )}
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="respondents-address">
-                    Where did it happen?
-                  </Label>
+                  <Label htmlFor="place-address">Where did it happen?</Label>
                   <Input
-                    {...register("respondent_address")}
-                    id="respondents-address"
+                    {...register("place_occurrence")}
+                    id="place-address"
                     placeholder="Enter the address"
                   />
                 </div>
@@ -412,13 +424,14 @@ const Form = () => {
               </div>
             </div>
           </CardContent>
-          <CardFooter className="flex justify-end gap-2">
-            <AlertAdd />
-            <Button type="submit" disabled={isSubmitting}>
-              Submit Complaint
-            </Button>
-            {errors.root && <div>{errors.root.message}</div>}
-          </CardFooter>
+          <div className="flex justify-end">
+            {" "}
+            <Button type="submit">Submit Complaint</Button>
+            <CardFooter className="flex justify-end gap-2">
+              <AlertAdd />
+            </CardFooter>
+          </div>
+          {errors.root && <div>{errors.root.message}</div>}
         </form>
       </Card>
     </div>
