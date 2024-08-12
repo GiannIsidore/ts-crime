@@ -160,35 +160,36 @@ const AlertAdd = () => {
                         {errors.address.message}
                       </span>
                     )}
+                    <div></div>
+                    <div className="flex gap-3 flex-row-reverse justify-end py-6">
+                      <Controller
+                        name="is_resident"
+                        control={control}
+                        render={({ field }) => (
+                          <input
+                            type="checkbox"
+                            placeholder="is_resident"
+                            id="is_resident"
+                            checked={field.value === "1"}
+                            onChange={(e) => {
+                              const target = e.target as HTMLInputElement; // Type assertion
+                              const newValue = target.checked ? "1" : "0";
+                              console.log("Checkbox changed:", newValue); // Debugging log
+                              setValue("is_resident", newValue, {
+                                shouldValidate: true,
+                                shouldDirty: true,
+                              });
+                              field.onChange(newValue); // Ensure the field's onChange is called with the new value
+                            }}
+                          />
+                        )}
+                      />
+                      <p>Check if you are a resident : </p>
+                    </div>
+                    <Button type="submit" disabled={isSubmitting}>
+                      Submit
+                    </Button>
                   </div>
-                  <div>
-                    <Controller
-                      name="is_resident"
-                      control={control}
-                      render={({ field }) => (
-                        <input
-                          type="checkbox"
-                          placeholder="is_resident"
-                          id="is_resident"
-                          checked={field.value === "1"}
-                          onChange={(e) => {
-                            const target = e.target as HTMLInputElement; // Type assertion
-                            const newValue = target.checked ? "1" : "0";
-                            console.log("Checkbox changed:", newValue); // Debugging log
-                            setValue("is_resident", newValue, {
-                              shouldValidate: true,
-                              shouldDirty: true,
-                            });
-                            field.onChange(newValue); // Ensure the field's onChange is called with the new value
-                          }}
-                        />
-                      )}
-                    />
-                    <p>Current is_resident value: {isResidentValue}</p>
-                  </div>
-                  <Button type="submit" disabled={isSubmitting}>
-                    Submit
-                  </Button>
                 </form>
               </CardContent>
             </Card>

@@ -1,0 +1,19 @@
+Raw data: {"data":{"complainant":"heidern v  montejo wala","respondent":"Giann Isidore  Legaspi ","date_occurrence":"2024-07-26","place_occurrence":"didto","complaint_type":"1","complaint_details":"SABA KAAYO SI GIANN ","resolution":"UNTA DLI NA SIYA MAG SABAAY"}}
+Decoded data: Array
+(
+    [data] => Array
+        (
+            [complainant] => heidern v  montejo wala
+            [respondent] => Giann Isidore  Legaspi 
+            [date_occurrence] => 2024-07-26
+            [place_occurrence] => didto
+            [complaint_type] => 1
+            [complaint_details] => SABA KAAYO SI GIANN 
+            [resolution] => UNTA DLI NA SIYA MAG SABAAY
+        )
+
+)
+
+Inserted complainant ID: 3
+Inserted respondent ID: 3
+Inserted case ID: 3
